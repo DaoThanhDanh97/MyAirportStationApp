@@ -13,5 +13,9 @@
       "app",
       "kebab-case"
     ]
+  },
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   }
 }
