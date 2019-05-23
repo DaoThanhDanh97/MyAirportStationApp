@@ -8,12 +8,13 @@
         (polyClick)="onPolyClick()"
     >
     </agm-polygon>
-    <agm-overlay 
+    <!-- <agm-overlay 
         *ngFor="let item of stationsData" 
         [latitude]="item.lat" 
         [longitude]="item.long" 
         style="padding: 0px"
     >
         <div class="stationPoint" (click)="onPointClick()"></div>
-    </agm-overlay>
+    </agm-overlay> -->
+    <agm-marker *ngFor="let item of stationsData" [latitude]="item.lat" [longitude]="item.long" [iconUrl]="'./assets/round.svg'"></agm-marker>
 </agm-map>

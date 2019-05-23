@@ -1,4 +1,6 @@
 .stationPoint {
+    padding: 0px;
+    margin: 0px;
     width: 10px;
     height: 10px;
     border-radius: 10px;
