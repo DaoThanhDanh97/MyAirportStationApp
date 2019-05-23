@@ -1,5 +1,19 @@
-<agm-map #AgmMap backgroundColor="white" [latitude]="lat" [longitude]="lng" [streetViewControl]="false" style="width: 100%; height: 100%">
-    <agm-polygon *ngFor="let item of boundaryData" [paths]="item" fillColor="#e6e6e6" strokeWeight="2">
+<agm-map #AgmMap backgroundColor="white" [latitude]="lat" [longitude]="lng" [streetViewControl]="false"
+    style="width: 100%; height: 100%">
+    <agm-polygon 
+        *ngFor="let item of boundaryData" 
+        [paths]="item" 
+        fillColor="#e6e6e6" 
+        strokeWeight="2"
+        (polyClick)="onPolyClick()"
+    >
     </agm-polygon>
-    <agm-marker *ngFor="let item of stationsData" [latitude]="item.lat" [longitude]="item.long"></agm-marker>
+    <agm-overlay 
+        *ngFor="let item of stationsData" 
+        [latitude]="item.lat" 
+        [longitude]="item.long" 
+        style="padding: 0px"
+    >
+        <div class="stationPoint" (click)="onPointClick()"></div>
+    </agm-overlay>
 </agm-map>

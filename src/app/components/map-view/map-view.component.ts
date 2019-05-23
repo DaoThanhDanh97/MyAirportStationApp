@@ -1,10 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { GoogleMapsAPIWrapper, AgmMap, LatLngBounds, LatLngBoundsLiteral, LatLngLiteral } from '@agm/core';
+import { AgmMap, LatLngLiteral } from '@agm/core';
 import { MapStateBoundaryService } from '../../services/map-state-boundary.service'
 import { MapMetarStationsService } from '../../services/map-metar-stations.service';
-//import { google } from '@agm/core/services/google-maps-types';
-
-//declare var google: any;
 
 @Component({
   selector: 'app-map-view',
@@ -61,5 +58,13 @@ export class MapViewComponent implements OnInit, AfterViewInit {
       this.mapStateBoundaryService.getBoundaryData();
       this.mapMetarStationsService.getStationsData();
     });
+  }
+
+  onPolyClick() {
+    console.log("Poly clicked");
+  }
+
+  onPointClick() {
+    console.log("Point clicked");
   }
 }
