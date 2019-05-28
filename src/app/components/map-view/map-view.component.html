@@ -1,20 +1,12 @@
-<agm-map #AgmMap backgroundColor="white" [latitude]="lat" [longitude]="lng" [streetViewControl]="false"
-    style="width: 100%; height: 100%">
-    <agm-polygon 
-        *ngFor="let item of boundaryData" 
-        [paths]="item" 
-        fillColor="#e6e6e6" 
-        strokeWeight="2"
-        (polyClick)="onPolyClick()"
-    >
-    </agm-polygon>
-    <!-- <agm-overlay 
-        *ngFor="let item of stationsData" 
-        [latitude]="item.lat" 
-        [longitude]="item.long" 
-        style="padding: 0px"
-    >
-        <div class="stationPoint" (click)="onPointClick()"></div>
-    </agm-overlay> -->
-    <agm-marker *ngFor="let item of stationsData" [latitude]="item.lat" [longitude]="item.long" [iconUrl]="'./assets/round.svg'"></agm-marker>
+<agm-map #AgmMap backgroundColor="#a8d6ff" [latitude]="lat" [longitude]="long" [streetViewControl]="false"
+    style="width: 100%; height: 100%" [zoom]="4" [minZoom]="4">
+    <agm-overlay *ngFor="let item of stationsData" [latitude]="item.lat" [longitude]="item.long">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="fill: red"
+                transform="translate(0, 9)">
+                <circle cx="9" cy="9" r="6" /></svg>
+            <span style="color: #645edf; font-size: 15px">{{ item.airportCode }}</span>
+        </div>
+    </agm-overlay>
 </agm-map>
+<app-map-view-state-dropdown class="container-fluid" style="position: absolute; top: 0px; left: 0px; padding: 10px"></app-map-view-state-dropdown>
