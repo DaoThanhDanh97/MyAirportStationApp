@@ -5,15 +5,17 @@ import { MapMetarStationsService } from '../services/map-metar-stations.service'
   selector: '[appStateSelector]'
 })
 export class StateSelectorDirective {
-
+  
   constructor(private elementRef: ElementRef, private renderer2: Renderer2, private mapMSS: MapMetarStationsService) { }
 
   onResetClick() {
     this.renderer2.setProperty(this.elementRef.nativeElement, 'value', '');
-    this.mapMSS.onStateChange('');
+    this.mapMSS.onStateChange('reset');
   }
 
   @HostListener('change', ['$event']) onChangeEvent(event: any) {
     this.mapMSS.onStateChange(event.target.value);
   }
+
+  
 }

@@ -1,0 +1,8 @@
+<div class="d-flex justify-content-center align-items-center pt-3 pb-3">
+  <button class="btn-circle mr-md-auto" [ngClass]="buttonClass" [ngStyle]="{'display': displayValue}" (click)="onDisplayModeSelect(displayMode)">
+    <mat-icon aria-label="Example icon-button with a heart icon">{{iconName}}</mat-icon>
+  </button>
+  <button class="btn-circle mr-md-auto" [ngClass]="buttonClassActive" [ngStyle]="{'display': displayValueActive}" (click)="onDisplayModeSelect(displayMode)">
+      <mat-icon aria-label="Example icon-button with a heart icon">{{iconName}}</mat-icon>
+    </button>
+</div>

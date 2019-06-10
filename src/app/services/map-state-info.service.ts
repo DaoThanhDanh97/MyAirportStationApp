@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { StateInfo } from '../models/state-info.model';
 import * as stateCenter from '../JSON/state_center.json'
+import { MapMetarStationsService } from './map-metar-stations.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,9 @@ export class MapStateInfoService {
 
   stateEvent = new EventEmitter<Array<StateInfo>>();
 
-  constructor() { 
-    this.getStatesInfo();
+  stateData = new EventEmitter<StateInfo>();
+
+  constructor(private mapMetarStationsService: MapMetarStationsService) {
   }
 
   getStatesInfo() {
@@ -20,5 +22,10 @@ export class MapStateInfoService {
     })
     
     this.stateEvent.emit(this.statesInfo.slice());
+  }
+
+  getStateToChange(state: string) {
+    this.stateData.emit(this.statesInfo.find((item: any) => item.state === state));
+    this.mapMetarStationsService.getStateToChange(state);
   }
 }

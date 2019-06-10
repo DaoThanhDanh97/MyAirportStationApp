@@ -11,7 +11,6 @@ export class MapStateBoundaryService {
   mapData = new EventEmitter<Array<Array<LatLngLiteral>>>();
 
   constructor() {
-    this.getBoundaryData();
   }
 
   getBoundaryData() {

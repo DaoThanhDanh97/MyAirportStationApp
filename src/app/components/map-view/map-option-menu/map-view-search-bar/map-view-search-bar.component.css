@@ -1,0 +1,25 @@
+.no-lower-margin {
+    margin-bottom: 0px !important
+}
+
+.wrap-flex {
+    display: flex;
+    flex-wrap: wrap
+}
+
+.top-padded {
+    padding-top: calc(.375rem + 1px)
+}
+
+.form-view {
+    background: white; 
+    border-radius: 0.5rem; 
+    padding: 1rem 0px;
+    border: 1px solid #536b83
+}
+
+.ul-layer {
+    z-index: 1;
+    position: absolute;
+    width: inherit;
+}
