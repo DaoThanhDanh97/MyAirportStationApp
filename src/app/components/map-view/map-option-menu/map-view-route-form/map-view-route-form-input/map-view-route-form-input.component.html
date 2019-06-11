@@ -1,0 +1,17 @@
+<div class="form-group container">
+  <label class="col-form-label">{{ innerTitleLabel }}</label>
+  <div class="d-flex flex-row flex-wrap">
+    <div class="col-md-9 p-0 mb-3 mb-md-0">
+      <input appSearchLine [(ngModel)]="inputValue" [attr.data-id]="inputType" [ngStyle]="{'display': inputDisplay}" type="text" class="noBoxShadow col-xl-12 form-control border-top-0 border-left-0 border-right-0 rounded-0" (input)="onInput()">
+      <div class="form-control border-0" [ngStyle]="{'display': stationDivDisplay}">{{resultValue}}</div>
+      <ul [ngStyle]="{'display': displayValue}" class="list-group ul-layer overflow-auto">
+        <li style="cursor: pointer" *ngFor="let item of result" [attr.data-airportCode]="item.airportCode" [attr.data-airportName]="item.airportName" class="container border list-group-item rounded-0" (click)="onRouteFormStationSelected($event.target)">
+          {{item.airportName}} ({{item.airportCode}})
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-3">
+        <button class="col-12 btn btn-primary" (click)="onResetClick()">Reset</button>
+    </div>
+  </div>
+</div>

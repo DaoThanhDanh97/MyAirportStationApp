@@ -44,5 +44,7 @@ export class MapViewSearchBarComponent implements OnInit, AfterViewInit {
     this.resetEventEmitter.emit();
   }
 
-  
+  airportModeClickTriggerEvent(data: any) {
+    this.appMapViewInput.airportModeClickTriggerEvent(data);
+  }
 }

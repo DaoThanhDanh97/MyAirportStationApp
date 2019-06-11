@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-map-option-button',
@@ -14,6 +14,8 @@ export class MapOptionButtonComponent implements OnInit {
   @Input() displayMode: string = "";
   @Input() buttonClassActive: string = "";
 
+  @Output() modeClickEvent = new EventEmitter<string>();
+
   constructor() { 
     this.displayValue = 'flex';
     this.displayValueActive = 'none';
@@ -25,5 +27,11 @@ export class MapOptionButtonComponent implements OnInit {
   onDisplayModeSelect(value: string) {
     this.displayValue = (this.displayValue == 'flex')? 'none' : 'flex';
     this.displayValueActive = (this.displayValueActive == 'flex')? 'none' : 'flex';
+    this.modeClickEvent.emit(value);
+  }
+
+  onOutsideDisplayValueTrigger(value: boolean) {
+    this.displayValue = (value == true)? 'none' : 'flex';
+    this.displayValueActive = (value == false)? 'none' : 'flex';
   }
 }

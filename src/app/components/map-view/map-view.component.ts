@@ -7,6 +7,9 @@ import { MapStateInfoService } from '../../services/map-state-info.service'
 
 import * as stateCentersDetail from '../../JSON/state_center.json';
 import { SpinnerLayerDirective } from 'src/app/directives/spinner-layer.directive';
+import { MapResetService } from 'src/app/services/map-reset.service';
+import { MapMarkerService } from 'src/app/services/map-marker.service';
+import { MapOptionMenuComponent } from './map-option-menu/map-option-menu.component';
 
 const earthRadius: number = 6371000;
 
@@ -14,7 +17,7 @@ const earthRadius: number = 6371000;
   selector: 'app-map-view',
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.css'],
-  providers: [MapStateBoundaryService, MapStateInfoService]
+  providers: [MapStateBoundaryService, MapStateInfoService, MapResetService, MapMarkerService]
 })
 export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
   zoomLevel: number = 5;
@@ -44,10 +47,17 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('AgmMap') agmMap: AgmMap;
   @ViewChild(SpinnerLayerDirective) spinnerLayer: SpinnerLayerDirective;
   @ViewChild('agmCircle', { read: AgmCircle }) agmCircle: AgmCircle;
+  @ViewChild('appMapOptionMenu') mapOptionMenuComponent: MapOptionMenuComponent
+
+  //airport mode
+  modeSelected: string = '';
+
 
   constructor(private mapStateBoundaryService: MapStateBoundaryService,
     private mapMetarStationsService: MapMetarStationsService,
-    private mapStateInfoService: MapStateInfoService) {
+    private mapStateInfoService: MapStateInfoService,
+    private mapResetService: MapResetService,
+    private mapMarkerService: MapMarkerService) {
     this.circleLat = this.lat;
     this.circleLong = this.long;
   }
@@ -78,6 +88,23 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         lat: data.lat,
         lng: data.long
       })
+    })
+
+    this.mapResetService.mapResetEvent.subscribe(() => {
+      this.onResetEvent();
+    })
+
+    this.mapMarkerService.clickEvent.subscribe((data: any) => {
+      this.zoomLevel = 10;
+      this.mapView.panTo({
+        lat: data.lat,
+        lng: data.long
+      })
+
+      if (this.modeSelected == 'airport_find') {
+        //this.mapOptionMenuComponent.airportModeClickTriggerEvent(data);
+        this.mapMarkerService.onAirportModeClickEvent(data);
+      }
     })
   }
 
@@ -237,5 +264,10 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.mapMetarStationsService.getBoundingAreaClickEvent(boundary.toJSON(), this.circleLat, this.circleLong, this.circleRadius)
       });
     }
+  }
+
+  updateMode(event: string) {
+    this.onResetEvent();
+    this.modeSelected = event;
   }
 }

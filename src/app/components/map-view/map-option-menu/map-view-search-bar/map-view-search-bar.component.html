@@ -1,9 +1,9 @@
-<div class="form-group">
+<div>
   <div class="col-xl-12">
     <div class="col-xl-12 form-view" style="pointer-events: visible">
       <form>
         <app-map-view-input #appMapViewInput (stationClickEventEmitter)="onStationSelected()" titleLabel="Metar Station" inputType="startPoint"></app-map-view-input>
-        <div class="container top-padded d-flex">
+        <div class="container top-padded wrap-flex">
           <button [disabled]="reportDisable" type="button" class="btn btn-primary col-sm-5 mr-0 mr-sm-1 mb-1 mb-sm-0">1-day Report</button>
           <button type="button" class="btn btn-danger col-sm-5" (click)="resetView()">Reset</button>
         </div>

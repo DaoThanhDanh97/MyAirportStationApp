@@ -1,5 +1,6 @@
-import { Directive, ElementRef, Renderer2, HostListener } from '@angular/core';
+import { Directive, ElementRef, Renderer2, HostListener, EventEmitter } from '@angular/core';
 import { NgxXml2jsonService } from 'ngx-xml2json';
+import { MapMarkerService } from '../services/map-marker.service';
 
 //var parser = require('xml2json');
 
@@ -9,7 +10,18 @@ import { NgxXml2jsonService } from 'ngx-xml2json';
 export class StationMarkerDirective {
   jsonResult: any;
 
+  prevent: boolean = false;
+
+  isDbClicked: boolean = false;
+  isClicked: boolean = false;
+
+  timer: any = 0;
+
   returnedJSON = {
+    lat: 0,
+    long: 0,
+    airportCode: "",
+    airportName: "",
     observationTime: "",
     altimeterSetting: 0,
     dewPoint: 0,
@@ -21,45 +33,73 @@ export class StationMarkerDirective {
     flightCategory: "",
   }
 
-  constructor(private elementRef: ElementRef, private renderer: Renderer2, private xmlJson: NgxXml2jsonService) { }
+  returnDbClick = {
+    lat: 0,
+    long: 0,
+    airportCode: "",
+    airportName: "",    
+  }
 
-  @HostListener('click', ['$event']) async onMarkerClick(event: any) {
+  constructor(private elementRef: ElementRef, 
+    private renderer: Renderer2, 
+    private xmlJson: NgxXml2jsonService,
+    private mapMarkerService: MapMarkerService) { }
+
+  @HostListener('click', ['$event.target']) onSingleClick(event: any) {
+    this.timer = setTimeout(() => {
+      if (this.prevent == false) {
+        //console.log(self);
+        this.onMarkerClick(this.elementRef.nativeElement);
+      }
+      this.prevent = false;
+    }, 200);
+  }
+
+  @HostListener('dblclick', ['$event.target']) onDoubleClick(event: any) {
+    clearTimeout(this.timer);
+    this.prevent = true;
+    this.onMarkerDoubleClick(this.elementRef.nativeElement);
+  }
+
+  onMarkerClick(element: any) {
     //this is temporary, will fix later by using new component
     let stationName = (this.elementRef.nativeElement.childNodes[1].innerText);
 
-    let test = await fetch('https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=' + stationName + '&hoursBeforeNow=2');
+    fetch('https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=' + stationName + '&hoursBeforeNow=2')
+      .then(data => data.text())
+      .then(data => {
+        let parser = new DOMParser();
+        let xml = parser.parseFromString(data, 'text/xml');
+        this.jsonResult = this.xmlJson.xmlToJson(xml);
+        let firstResult = this.jsonResult.response.data.METAR[0];
 
-    let res = await test.text();
+        this.returnedJSON = {
+          lat: parseFloat(element.getAttribute('data-lat')),
+          long: parseFloat(element.getAttribute('data-long')),
+          airportCode: element.getAttribute('data-airportCode'),
+          airportName: element.getAttribute('data-airportName'),
+          observationTime: new Date(firstResult.observation_time) + "",
+          altimeterSetting: parseFloat(firstResult.altim_in_hg),
+          dewPoint: parseFloat(firstResult.dewpoint_c),
+          temperature: parseFloat(firstResult.temp_c),
+          windSpeedKt: parseFloat(firstResult.wind_speed_kt),
+          visibilityStatueMiles: parseFloat(firstResult.visibility_statute_mi),
+          windDegree: parseFloat(firstResult.wind_dir_degrees),
+          skyCondition: (Array.isArray(firstResult.sky_condition) == true)? firstResult.sky_condition.map((item: any) => item["@attributes"]) : [firstResult.sky_condition["@attributes"]],
+          flightCategory: firstResult.flight_category
+        }
 
-    let parser = new DOMParser();
+        this.mapMarkerService.onClickEvent(this.returnedJSON);
+      })
+  }
 
-    let xml = parser.parseFromString(res, 'text/xml');
-
-    this.jsonResult = this.xmlJson.xmlToJson(xml);
-
-    let firstResult = this.jsonResult.response.data.METAR[0];
-
-    console.log(firstResult);
-
-    this.returnedJSON.observationTime = new Date(firstResult.observation_time) + "";
-    this.returnedJSON.altimeterSetting = parseFloat(firstResult.altim_in_hg);
-    this.returnedJSON.dewPoint = parseFloat(firstResult.dewpoint_c);
-    this.returnedJSON.temperature = parseFloat(firstResult.temp_c);
-    this.returnedJSON.windSpeedKt = parseFloat(firstResult.wind_speed_kt);
-    this.returnedJSON.visibilityStatueMiles = parseFloat(firstResult.visibility_statute_mi);
-    this.returnedJSON.windDegree = parseFloat(firstResult.wind_dir_degrees);
-    this.returnedJSON.skyCondition = (Array.isArray(firstResult.sky_condition) == true)? firstResult.sky_condition.map((item: any) => item["@attributes"]) : [firstResult.sky_condition["@attributes"]];
-    this.returnedJSON.flightCategory = firstResult.flight_category;
-
-    alert(
-      "Observation Time: " + this.returnedJSON.observationTime + "\n" +
-      "Pressure Altitude: " + this.returnedJSON.altimeterSetting + "\n" +
-      "Dewpoint (Celsius): " + this.returnedJSON.dewPoint + "\n" +
-      "Temperature (Celsius): " + this.returnedJSON.temperature + "\n" +
-      "Wind Speed (knot): " + this.returnedJSON.windSpeedKt + "\n" +
-      "Wind Direction (degree): " + this.returnedJSON.windDegree + "\n" +
-      "Sky Condition: " + this.returnedJSON.skyCondition.map((item: any) => JSON.stringify(item)).join(",") + "\n" +
-      "Flight Category: " + this.returnedJSON.flightCategory
-    )
+  onMarkerDoubleClick(element: any) {
+    this.returnDbClick = {
+      lat: parseFloat(element.getAttribute('data-lat')),
+      long: parseFloat(element.getAttribute('data-long')),
+      airportCode: element.getAttribute('data-airportCode') + "",
+      airportName: element.getAttribute('data-airportName') + ""
+    }
+    this.mapMarkerService.onClickEvent(this.returnDbClick);
   }
 }

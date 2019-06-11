@@ -26,6 +26,8 @@ import { MapOptionMenuComponent } from './components/map-view/map-option-menu/ma
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule, MatCheckboxModule, MatIconModule} from '@angular/material';
 import { MapOptionButtonComponent } from './components/map-view/map-option-menu/map-option-button/map-option-button.component';
+import { MapViewRouteFormComponent } from './components/map-view/map-option-menu/map-view-route-form/map-view-route-form.component';
+import { MapViewRouteFormInputComponent } from './components/map-view/map-option-menu/map-view-route-form/map-view-route-form-input/map-view-route-form-input.component';
 
 const appRoute: Routes = [
   {
@@ -62,6 +64,8 @@ const appRoute: Routes = [
     MapZoomSelectorComponent,
     MapOptionMenuComponent,
     MapOptionButtonComponent,
+    MapViewRouteFormComponent,
+    MapViewRouteFormInputComponent,
   ],
   imports: [
     BrowserModule,
