@@ -5,7 +5,7 @@
     <app-map-option-button #mapOptionArea (modeClickEvent)="changeSelectMode($event)" class="col pl-md-0" [buttonClass]="'btn-circle-area'" [buttonClassActive]="'btn-circle-area-active'" [iconName]="'all_out'" [displayMode]="'area_find'"></app-map-option-button>
   </div>
   <!-- <div [ngSwitch]="displayMode" class="col-md-10 d-flex justify-content-center align-items-center"> -->
-  <div [ngSwitch]="selectedOption" class="col-md-11 d-flex align-items-center">
+  <div [ngStyle]="{'display': modeDisplay}" [ngSwitch]="selectedOption" class="col-md-11 align-items-center">
     <app-map-view-search-bar #mapViewSearchBar *ngSwitchCase="'airport_find'" class="col form-wrapper pl-0 pr-0 pr-md-3"></app-map-view-search-bar>
     <app-map-view-route-form *ngSwitchCase="'flight_find'" class="col form-wrapper pl-0 pr-0 pr-md-3"></app-map-view-route-form>
     <div *ngSwitchDefault></div>

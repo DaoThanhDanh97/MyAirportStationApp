@@ -9,6 +9,7 @@ import { MapViewSearchBarComponent } from './map-view-search-bar/map-view-search
 })
 export class MapOptionMenuComponent implements OnInit {
   selectedOption: string = "";
+  modeDisplay: string = 'none';
 
   @ViewChild('mapOptionAirport') mapOptionAirport: MapOptionButtonComponent;
   @ViewChild('mapOptionRoute') mapOptionRoute: MapOptionButtonComponent;
@@ -29,14 +30,19 @@ export class MapOptionMenuComponent implements OnInit {
     this.mapOptionRoute.onOutsideDisplayValueTrigger(false);
     this.mapOptionArea.onOutsideDisplayValueTrigger(false);
 
+    this.modeDisplay = 'none';
+
     if(event == this.mapOptionAirport.displayMode) {
       this.mapOptionAirport.onOutsideDisplayValueTrigger(true);
+      this.modeDisplay = 'flex';
     }
     else if (event == this.mapOptionRoute.displayMode) {
       this.mapOptionRoute.onOutsideDisplayValueTrigger(true);
+      this.modeDisplay = 'flex';
     }
     else if (event == this.mapOptionArea.displayMode) {
       this.mapOptionArea.onOutsideDisplayValueTrigger(true);
+      this.modeDisplay = 'flex';
     }
 
     this.changeModeEvent.emit(event);

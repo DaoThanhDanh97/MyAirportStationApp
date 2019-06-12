@@ -2,9 +2,22 @@
   <div class="col-xl-12">
     <div class="col-xl-12 form-view" style="pointer-events: visible">
       <form>
-          <app-map-view-route-form-input [innerTitleLabel]="'Departure'" [inputType]="'departure'"></app-map-view-route-form-input>
-          <app-map-view-route-form-input [innerTitleLabel]="'Arrival'" [inputType]="'arrival'"></app-map-view-route-form-input>
-      </form>
+          <app-map-view-route-form-input #routeStart (stationSearchUpdate)="onStationSearchUpdate($event)" [innerTitleLabel]="'Departure'" [inputType]="'departure'"></app-map-view-route-form-input>
+          <app-map-view-route-form-input #routeEnd (stationSearchUpdate)="onStationSearchUpdate($event)" [innerTitleLabel]="'Arrival'" [inputType]="'arrival'"></app-map-view-route-form-input>
+          <div class="container">
+            <button class="btn btn-success col-md-4 form_button" (click)="showRoute()">Show Route</button>
+          </div>
+        </form>
+    </div>
+    <div class="col-xl-12 form-view" style="pointer-events: visible" [ngStyle]="{'display': suggestionDisplay}">
+      <div class="col-xl-12 container">
+        <label class="col-form-label">Suggestion</label>
+        <ul class="list-group ul_layer">
+          <li  *ngFor="let item of currentResults" class="list-group-item recommend_list_item" (click)="onSuggestionClick(item)">
+            {{item.airportName}} ({{item.airportCode}})
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

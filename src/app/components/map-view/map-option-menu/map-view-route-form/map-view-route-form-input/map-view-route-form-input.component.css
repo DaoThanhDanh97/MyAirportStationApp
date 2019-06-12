@@ -8,3 +8,12 @@
     width: inherit;
     max-height: 200px
 }
+
+.form_transpbg {
+    background: transparent
+}
+
+.form_pointerAvailable {
+   pointer-events: visible 
+}
+

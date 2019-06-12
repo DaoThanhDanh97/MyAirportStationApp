@@ -2,8 +2,8 @@
   <label class="col-form-label">{{ innerTitleLabel }}</label>
   <div class="wrap-flex">
     <div class="col-md-12 p-0 mb-0">
-      <input [ngStyle]="{'display': inputDisplay}" [attr.data-id]="inputType" appSearchLine [ngClass]="inputClass" [(ngModel)]="inputValue" type="text" (focus)="onInputFieldFocus($event.target)" (blur)="onInputFieldBlur()" (input)="onInput()">
-      <div class="form-control border-0" [ngStyle]="{'display': stationDivDisplay}">{{resultValue}}</div>
+      <input class="transP_bg" [ngStyle]="{'display': inputDisplay}" [attr.data-id]="inputType" appSearchLine [ngClass]="inputClass" [(ngModel)]="inputValue" type="text" (focus)="onInputFieldFocus($event.target)" (blur)="onInputFieldBlur()" (input)="onInput()">
+      <div class="form-control border-0 transP_bg" [ngStyle]="{'display': stationDivDisplay}">{{resultValue}}</div>
       <ul [ngStyle]="{'display': displayValue}" class="list-group ul-layer overflow-auto">
         <li style="cursor: pointer" *ngFor="let item of result" [attr.data-airportCode]="item.airportCode" [attr.data-airportName]="item.airportName" class="container border list-group-item rounded-0" (click)="onStationSelected($event.target)">
           {{item.airportName}} ({{item.airportCode}})

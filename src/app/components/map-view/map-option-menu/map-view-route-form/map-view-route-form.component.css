@@ -1,6 +1,23 @@
 .form-view {
-    background: white; 
+    background: rgba(255, 255, 255, 0.5); 
     border-radius: 0.5rem; 
     padding: 1rem 0px;
-    border: 1px solid #536b83
+    border: 1px solid #536b83;
+}
+
+.recommend_list_item {
+    cursor: pointer;
+    pointer-events: visible;
+    background: transparent;
+    border: 1px solid rgb(99, 116, 213)
+}
+
+.ul_layer {
+    overflow: auto;
+    max-height: 150px;
+    pointer-events: visible
+}
+
+.form_button {
+    pointer-events: visible
 }

@@ -20,7 +20,7 @@
         [strokeOpacity]="0.7"
         [radius]="circleRadius"
         [zIndex]="1"
-        [visible]="true"
+        [visible]="isCircleVisible"
         [latitude]="circleLat"
         [longitude]="circleLong"
         (centerChange)="onCenterChange($event)"
@@ -37,5 +37,5 @@
     </agm-marker>
 </agm-map>
 <app-map-zoom-selector class="bar-wrapper col-xl-4 d-flex flex-column mr-2" (zoomMapEvent)="zoomMapEventHandler($event)"></app-map-zoom-selector>
-<app-map-option-menu #appMapOptionMenu (changeModeEvent)="updateMode($event)" class="col-lg-8 col-xl-5" style="position: absolute; top: 0; left: 0"></app-map-option-menu>
+<app-map-option-menu #appMapOptionMenu (changeModeEvent)="updateMode($event)" class="col-lg-8 col-xl-5 mt-0 mt-lg-3 no_pointerEvent" style="position: absolute; top: 0; left: 0"></app-map-option-menu>
 <app-map-view-spinner appSpinnerLayer class="mapViewSpinner"></app-map-view-spinner>

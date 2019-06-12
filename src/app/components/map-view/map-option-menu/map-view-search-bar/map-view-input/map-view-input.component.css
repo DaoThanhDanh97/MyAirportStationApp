@@ -13,3 +13,7 @@
 .no-border-box {
     box-shadow: none
 }
+
+.transP_bg {
+    background: transparent
+}

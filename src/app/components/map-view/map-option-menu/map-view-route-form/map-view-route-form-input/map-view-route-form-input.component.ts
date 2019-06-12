@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MapMetarStationsService } from 'src/app/services/map-metar-stations.service';
 import { InputServiceService } from 'src/app/services/input-service.service';
 import { MapResetService } from 'src/app/services/map-reset.service';
@@ -13,12 +13,12 @@ export class MapViewRouteFormInputComponent implements OnInit {
   @Input() inputType: string;
 
   inputValue: string;
-  displayValue: string;
   stationDivDisplay: string;
-  resultValue: string;
   inputDisplay: string;
+  resultValue: string;
+  stationCode: string;
 
-  result: Array<{airportName: string, airportCode: string}> = [];
+  @Output() stationSearchUpdate = new EventEmitter<{value: string, src: string}>();
 
   constructor(private mapMetarStationsService: MapMetarStationsService, 
     private inputService: InputServiceService,
@@ -28,44 +28,34 @@ export class MapViewRouteFormInputComponent implements OnInit {
   ngOnInit() {
     this.inputValue = '';
     this.inputDisplay = 'block';
-    this.displayValue = 'none';
     this.stationDivDisplay = 'none';
     this.resultValue = '';
-
-    this.mapMetarStationsService.stationsByInputEvent.subscribe((data: any) => {
-      this.result = (data.inputSource == this.inputType)? data.result : [];
-      this.displayValue = (this.result.length > 0)? 'block' : 'none';
-    })
-
-    this.inputService.closeTriggerEvent.subscribe((data: any) => {
-      //console.log(data);
-      if(data.src == this.inputType) {
-        this.result = [];
-        this.displayValue = 'none';
-      }
-    })
+    this.stationCode = '';
   }
 
   onInput() {
-    this.mapMetarStationsService.onInputChange(this.inputValue, this.inputType);
-  }
-
-  onRouteFormStationSelected(value: any) {
-    this.mapMetarStationsService.getMoveDestination(value.getAttribute('data-airportCode'));
-    this.inputValue = value.getAttribute('data-airportName') + " (" + value.getAttribute('data-airportCode') + ")";
-    this.resultValue = this.inputValue;
-    this.result = [];
-    this.displayValue = 'none';
-    this.inputDisplay = 'none';
-    this.stationDivDisplay = 'block';
+    //this.mapMetarStationsService.onInputChange(this.inputValue, this.inputType);
+    this.stationSearchUpdate.emit({
+      value: this.inputValue,
+      src: this.inputType
+    })
   }
 
   onResetClick() {
     this.inputValue = '';
     this.inputDisplay = 'block';
-    this.displayValue = 'none';
     this.stationDivDisplay = 'none';
     this.resultValue = '';
+    this.stationCode = '';
     this.mapResetService.onMapResetTrigger();
+  }
+
+  onReceivedUpdate(value: any) {
+    //console.log(value);
+    this.stationDivDisplay = 'block';
+    this.inputDisplay = 'none';
+    this.inputValue = value.airportName + " (" + value.airportCode + ")";
+    this.resultValue = this.inputValue;
+    this.stationCode = value.airportCode;
   }
 }

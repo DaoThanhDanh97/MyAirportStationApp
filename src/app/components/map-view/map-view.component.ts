@@ -40,6 +40,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
   data_layer2: any;
   featuresNumber: number = 0;
   isCenterChanged: boolean = false;
+  isCircleVisible: boolean = false;
 
   state_JSON: string = 'https://firebasestorage.googleapis.com/v0/b/mydbjson.appspot.com/o/us_state.json?alt=media&token=f4135f44-430a-41c6-8e64-5e3e45d73954';
   county_JSON: string = 'https://firebasestorage.googleapis.com/v0/b/mydbjson.appspot.com/o/us_county_geojson.json?alt=media&token=0405f96b-3dcb-4ae2-81b3-1a1f8d85c7a1';
@@ -162,7 +163,9 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.data_layer2.addListener('rightclick', (event: any) => {
         //console.log(event.latLng.lat());
-        this.addToCircleBoundingPoint(event.latLng.lat(), event.latLng.lng())
+        if(this.modeSelected == 'area_find') {
+          this.addToCircleBoundingPoint(event.latLng.lat(), event.latLng.lng())
+        }
       })
 
       setTimeout(() => {
@@ -269,5 +272,6 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
   updateMode(event: string) {
     this.onResetEvent();
     this.modeSelected = event;
+    this.isCircleVisible = false;
   }
 }

@@ -13,6 +13,7 @@ export class MapMarkerService {
   }>();
 
   airportModeEvent = new EventEmitter<any>();
+  routeModeEvent = new EventEmitter<any>();
 
   constructor() { }
 
@@ -31,5 +32,9 @@ export class MapMarkerService {
 
   onAirportModeClickEvent(data: any) {
     this.airportModeEvent.emit(data);
+  }
+
+  onRouteModeClickEvent(data: any) {
+    this.routeModeEvent.emit(data);
   }
 }
