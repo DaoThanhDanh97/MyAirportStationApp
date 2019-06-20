@@ -20,7 +20,7 @@ export class MapZoomSelectorComponent implements OnInit {
 
   setZoomLevel(value: number) {
     //console.log(value);
-    this.mapMetarStationsService.setClickTrigger(false);
+    //this.mapMetarStationsService.setClickTrigger(false);
 
     this.zoomMapEvent.emit(value);
   }

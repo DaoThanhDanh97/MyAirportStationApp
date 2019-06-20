@@ -21,3 +21,39 @@
 .form_button {
     pointer-events: visible
 }
+
+input {    
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.input-bar {
+    font-size: 20px; 
+    border: none
+}
+
+.btn-circle {
+    height: 40px !important;
+    width: 40px !important;
+    border-radius: 40px !important;
+}
+
+ul li {
+    border: none;
+    cursor: pointer
+}
+
+ul li div {
+    border-bottom: 2px solid #d3d3d3
+}
+
+ul li:nth-last-child(1) div {
+    border: none
+}
+
+.suggestion-label {
+    padding-left: 1.25rem;
+    font-size: 20px;
+    color: #25519d;
+    padding-top: 1rem;
+}

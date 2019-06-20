@@ -37,6 +37,7 @@ export class MapMetarStationsService {
 
   onBoundaryChange(boundary: any, zoomLevel: number) {
     console.log(zoomLevel);
+    console.log(this.clickTrigger);
     if(this.clickTrigger == false) {
       if(zoomLevel < 8) {
         this.stationsEvent.emit(this.stations.filter(item => item.isMajor == true));
@@ -100,9 +101,7 @@ export class MapMetarStationsService {
     this.stationsEvent.emit(this.stations.filter(item => item.stateAbbr == state));
   }
 
-  getBoundingAreaClickEvent(boundary: any, lat: number, long: number, radius: number) {
-    console.log('Changed');
-
+  getBoundingAreaClickEvent(lat: number, long: number, radius: number) {
     this.clickTrigger = true;
 
     this.stationsEvent.emit(

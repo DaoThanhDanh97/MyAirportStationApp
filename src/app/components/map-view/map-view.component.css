@@ -38,3 +38,17 @@
 .no_pointerEvent {
     pointer-events: none;
 }
+
+.outline_red {
+    font-family: 'Material Icons Outlined';
+    color: 'red'
+}
+
+.station_label {
+    color: #645edf; 
+    font-size: 15px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 1.5rem
+}

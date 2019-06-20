@@ -1,41 +1,46 @@
-<agm-map #AgmMap backgroundColor="#fff" [latitude]="lat" [longitude]="long" [streetViewControl]="false"
+<agm-map #AgmMap backgroundColor="#A6D3FC" [latitude]="lat" [longitude]="long" [streetViewControl]="false"
     style="width: 100%; height: 100%" [zoom]="zoomLevel" [minZoom]="3" [maxZoom]="10"
-    (zoomChange)="onZoomChange($event)" (mapRightClick)="onRightClickMap($event)"
->
-    <agm-overlay *ngFor="let item of stationsData" [latitude]="item.lat" [longitude]="item.long">
-        <div [attr.data-lat]="item.lat" [attr.data-long]="item.long" [attr.data-airportCode]="item.airportCode" [attr.data-airportName]="item.airportName" style="cursor: pointer" appStationMarker>
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="fill: red"
-                transform="translate(0, 9)">
-                <circle cx="9" cy="9" r="6" /></svg>
-            <span style="color: #645edf; font-size: 15px">{{ item.airportCode }}</span>
+    (zoomChange)="onZoomChange($event)" (mapRightClick)="onRightClickMap($event)">
+    <div [ngSwitch]="isAreaFound">
+        <div *ngSwitchCase="false">
+            <agm-overlay *ngFor="let item of stationsData" [latitude]="item.lat" [longitude]="item.long">
+                <div class="d-flex flex-column" [attr.data-lat]="item.lat" [attr.data-long]="item.long"
+                    [attr.data-airportCode]="item.airportCode" [attr.data-airportName]="item.airportName"
+                    style="cursor: pointer" appStationMarker>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="fill: red"
+                        transform="translate(0, 9)">
+                        <circle cx="9" cy="9" r="6" />
+                    </svg>
+                    <span class="station_label">{{ item.airportCode }}</span>
+                </div>
+            </agm-overlay>
         </div>
-    </agm-overlay>
-
-    <agm-circle
-        #agmCircle
-        [circleDraggable]="false"
-        fillColor="#f5b7b7"
-        [fillOpacity]="0.5"
-        strokeColor="#e12d2d"
-        [strokeOpacity]="0.7"
-        [radius]="circleRadius"
-        [zIndex]="1"
-        [visible]="isCircleVisible"
-        [latitude]="circleLat"
-        [longitude]="circleLong"
-        (centerChange)="onCenterChange($event)"
-        (radiusChange)="onRadiusChange($event)"
-        [editable]="true"
-    >
-    </agm-circle>
-
-    <agm-marker
-        *ngFor="let item of circleBoundingPoints"
-        [latitude]="item.lat"
-        [longitude]="item.long"
-    >
+        <agm-marker-cluster *ngSwitchCase="true" imagePath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m">
+            <agm-overlay *ngFor="let item of areaStationsData" [latitude]="item.lat" [longitude]="item.long">
+                <div class="d-flex flex-column" [attr.data-lat]="item.lat" [attr.data-long]="item.long"
+                    [attr.data-airportCode]="item.airportCode" [attr.data-airportName]="item.airportName"
+                    style="cursor: pointer" appStationMarker>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="fill: red"
+                        transform="translate(0, 9)">
+                        <circle cx="9" cy="9" r="6" />
+                    </svg>
+                    <span class="station_label">{{ item.airportCode }}</span>
+                </div>
+            </agm-overlay>
+        </agm-marker-cluster>
+    </div>
+    <agm-marker *ngFor="let item of circleBoundingPoints" [latitude]="item.lat" [longitude]="item.long">
     </agm-marker>
+    <!--testing-->
+    <app-map-view-marker
+        [latitude]="29.292455"
+        [longitude]="-86.948235"
+        [airportCode]="'HLSS'"
+        [airportName]="'HelloStation'"
+    ></app-map-view-marker>
 </agm-map>
-<app-map-zoom-selector class="bar-wrapper col-xl-4 d-flex flex-column mr-2" (zoomMapEvent)="zoomMapEventHandler($event)"></app-map-zoom-selector>
-<app-map-option-menu #appMapOptionMenu (changeModeEvent)="updateMode($event)" class="col-lg-8 col-xl-5 mt-0 mt-lg-3 no_pointerEvent" style="position: absolute; top: 0; left: 0"></app-map-option-menu>
+<app-map-zoom-selector class="col-xl-3 bar-wrapper d-flex flex-column mr-2"
+    (zoomMapEvent)="zoomMapEventHandler($event)" style="pointer-events: none"></app-map-zoom-selector>
+<app-map-option-menu #appMapOptionMenu (changeModeEvent)="updateMode($event)" class="col-xl-5 mt-3 no_pointerEvent"
+    style="position: absolute; top: 0; left: 0"></app-map-option-menu>
 <app-map-view-spinner appSpinnerLayer class="mapViewSpinner"></app-map-view-spinner>

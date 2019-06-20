@@ -1,13 +1,49 @@
-<div>
-  <div class="col-xl-12">
-    <div class="col-xl-12 form-view" style="pointer-events: visible">
-      <form>
-        <app-map-view-input #appMapViewInput (stationClickEventEmitter)="onStationSelected()" titleLabel="Metar Station" inputType="startPoint"></app-map-view-input>
-        <div class="container top-padded wrap-flex">
-          <button [disabled]="reportDisable" type="button" class="btn btn-primary col-sm-5 mr-0 mr-sm-1 mb-1 mb-sm-0">1-day Report</button>
-          <button type="button" class="btn btn-danger col-sm-5" (click)="resetView()">Reset</button>
-        </div>
-      </form>
+<div class="pl-4 pr-4" style="background-color: white; width: fit-content; pointer-events: visible">
+  <label class="col-form-label pb-0" style="font-size: 18px; font-family: 'Roboto'">Station Finder</label>
+</div>
+<div class="col-xl-12 d-flex flex-row pr-0 pl-0" style="pointer-events: visible">
+  <div class="col-8 pb-2 pt-2 pr-0 pl-0" style="background-color: white">
+    <div>
+      <input [(ngModel)]="inputValue" type="text" class="pl-4 form-control input-bar"
+        [ngStyle]="{'display': inputDisplay}" placeholder="Input Station Name Here..." appSearchLine
+        #appMapViewSearchBar [attr.data-id]="stationSearchBar">
+      <div class="pl-4 form-control input-bar" [ngStyle]="{'display': resultDivDisplay}" (click)="onResultDivClick()">
+        {{resultValue}}
+      </div>
     </div>
+  </div>
+  <div class="col-4 d-flex flex-row justify-content-center align-items-center pl-0 pr-0 pb-2 pt-2"
+    style="background: white">
+    <div class="col d-flex align-items-center justify-content-center"
+      style="border-right: 1px solid #d3d3d3; height: 100%">
+      <div>
+        <button class="btn-circle d-flex">
+          <mat-icon aria-label="Example icon-button with a heart icon" svgIcon="report_24"></mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="col d-flex align-items-center justify-content-center"
+      style="border-right: 1px solid #d3d3d3; height: 100%">
+      <div>
+        <button class="btn-circle d-flex" (click)="onModeChange('flight_find')">
+          <mat-icon aria-label="Example icon-button with a heart icon">flight_takeoff</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="col d-flex align-items-center justify-content-center" style="height: 100%">
+      <button class="btn-circle d-flex" (click)="onModeChange('area_find')">
+        <mat-icon aria-label="Example icon-button with a heart icon">all_out</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="col-xl-12 pr-0 pl-0" [ngStyle]="{'display': resultListDisplay}">
+  <div class="col-8 p-0" style="background-color: white; pointer-events: visible">
+    <ul class="list-group" style="overflow-y: auto; max-height: 200px">
+      <li *ngFor="let item of result" class="list-group-item" style="border: 1px solid #d3d3d3; cursor: pointer;"
+        (click)="onItemClick(item)">
+        {{item.airportName}} ({{item.airportCode}})
+      </li>
+    </ul>
   </div>
 </div>

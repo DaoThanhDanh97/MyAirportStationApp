@@ -100,6 +100,6 @@ export class StationMarkerDirective {
       airportCode: element.getAttribute('data-airportCode') + "",
       airportName: element.getAttribute('data-airportName') + ""
     }
-    this.mapMarkerService.onClickEvent(this.returnDbClick);
+    this.mapMarkerService.onDoubleClickEvent(this.returnDbClick);
   }
 }

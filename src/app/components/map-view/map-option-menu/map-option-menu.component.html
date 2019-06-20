@@ -1,13 +1,5 @@
-<div class="flexWrap">
-  <div class="col-md-1 wrapperDiv">
-    <app-map-option-button #mapOptionAirport (modeClickEvent)="changeSelectMode($event)" class="col pl-md-0" [buttonClass]="'btn-circle-station'" [buttonClassActive]="'btn-circle-station-active'" [iconName]="'local_airport'" [displayMode]="'airport_find'"></app-map-option-button>
-    <app-map-option-button #mapOptionRoute (modeClickEvent)="changeSelectMode($event)" class="col pl-md-0" [buttonClass]="'btn-circle-route'" [buttonClassActive]="'btn-circle-route-active'" [iconName]="'flight_takeoff'" [displayMode]="'flight_find'"></app-map-option-button>
-    <app-map-option-button #mapOptionArea (modeClickEvent)="changeSelectMode($event)" class="col pl-md-0" [buttonClass]="'btn-circle-area'" [buttonClassActive]="'btn-circle-area-active'" [iconName]="'all_out'" [displayMode]="'area_find'"></app-map-option-button>
-  </div>
-  <!-- <div [ngSwitch]="displayMode" class="col-md-10 d-flex justify-content-center align-items-center"> -->
-  <div [ngStyle]="{'display': modeDisplay}" [ngSwitch]="selectedOption" class="col-md-11 align-items-center">
-    <app-map-view-search-bar #mapViewSearchBar *ngSwitchCase="'airport_find'" class="col form-wrapper pl-0 pr-0 pr-md-3"></app-map-view-search-bar>
-    <app-map-view-route-form *ngSwitchCase="'flight_find'" class="col form-wrapper pl-0 pr-0 pr-md-3"></app-map-view-route-form>
-    <div *ngSwitchDefault></div>
-  </div>
+<div [ngSwitch]="selectedOption">
+  <app-map-view-search-bar *ngSwitchCase="'airport_find'"></app-map-view-search-bar>
+  <app-map-view-route-form *ngSwitchCase="'flight_find'"></app-map-view-route-form>
+  <app-map-option-area-find *ngSwitchCase="'area_find'"></app-map-option-area-find>
 </div>

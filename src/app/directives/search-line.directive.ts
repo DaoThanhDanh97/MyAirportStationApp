@@ -21,4 +21,12 @@ export class SearchLineDirective {
   @HostListener('focus', ['$event']) onFocusClick(event: any) {
     this.mapMetarStationsService.onInputChange(this.elementRef.nativeElement.value, this.elementRef.nativeElement.getAttribute('data-id'));
   }
+
+  @HostListener('input', ['$event']) oninput(event: any) {
+    this.mapMetarStationsService.onInputChange(this.elementRef.nativeElement.value, this.elementRef.nativeElement.getAttribute('data-id'));
+  }
+
+  clickFocus() {
+    setTimeout(() => this.elementRef.nativeElement.focus(), 0);
+  }
 }

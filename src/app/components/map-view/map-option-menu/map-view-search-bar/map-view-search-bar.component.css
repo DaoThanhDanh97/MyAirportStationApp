@@ -18,8 +18,24 @@
     border: 1px solid #536b83
 }
 
+.btn-circle {
+    height: 40px !important;
+    width: 40px !important;
+    border-radius: 40px !important;
+}
+
 .ul-layer {
     z-index: 1;
     position: absolute;
     width: inherit;
+}
+
+input {    
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.input-bar {
+    font-size: 20px; 
+    border: none
 }

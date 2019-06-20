@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { MapOptionButtonComponent } from './map-option-button/map-option-button.component';
 import { MapViewSearchBarComponent } from './map-view-search-bar/map-view-search-bar.component';
+import { MapOptionSelectService } from 'src/app/services/map-option-select.service';
+import { MapOptionAreaFindComponent } from './map-option-area-find/map-option-area-find.component';
 
 @Component({
   selector: 'app-map-option-menu',
@@ -8,47 +10,21 @@ import { MapViewSearchBarComponent } from './map-view-search-bar/map-view-search
   styleUrls: ['./map-option-menu.component.css']
 })
 export class MapOptionMenuComponent implements OnInit {
-  selectedOption: string = "";
-  modeDisplay: string = 'none';
+  selectedOption: string;
 
-  @ViewChild('mapOptionAirport') mapOptionAirport: MapOptionButtonComponent;
-  @ViewChild('mapOptionRoute') mapOptionRoute: MapOptionButtonComponent;
-  @ViewChild('mapOptionArea') mapOptionArea: MapOptionButtonComponent;
-  @ViewChild('mapViewSearchBar') mapViewSearchBar: MapViewSearchBarComponent;
+  @ViewChild(MapOptionAreaFindComponent) mapOptionAreaFindComponent: MapOptionAreaFindComponent;
 
-  @Output() changeModeEvent = new EventEmitter<string>();
-
-  constructor() { }
+  constructor(private mapOptionSelectService: MapOptionSelectService) {
+    this.selectedOption = 'airport_find';
+  }
 
   ngOnInit() {
+    this.mapOptionSelectService.mapOptionSelected.subscribe((value: string) => {
+      this.selectedOption = value;
+    })
   }
 
-  changeSelectMode(event: string) {
-    this.selectedOption = event;
-
-    this.mapOptionAirport.onOutsideDisplayValueTrigger(false);
-    this.mapOptionRoute.onOutsideDisplayValueTrigger(false);
-    this.mapOptionArea.onOutsideDisplayValueTrigger(false);
-
-    this.modeDisplay = 'none';
-
-    if(event == this.mapOptionAirport.displayMode) {
-      this.mapOptionAirport.onOutsideDisplayValueTrigger(true);
-      this.modeDisplay = 'flex';
-    }
-    else if (event == this.mapOptionRoute.displayMode) {
-      this.mapOptionRoute.onOutsideDisplayValueTrigger(true);
-      this.modeDisplay = 'flex';
-    }
-    else if (event == this.mapOptionArea.displayMode) {
-      this.mapOptionArea.onOutsideDisplayValueTrigger(true);
-      this.modeDisplay = 'flex';
-    }
-
-    this.changeModeEvent.emit(event);
-  }
-
-  airportModeClickTriggerEvent(data: any) {
-    this.mapViewSearchBar.airportModeClickTriggerEvent(data);
+  onResetAreaButton() {
+    this.mapOptionAreaFindComponent.setResetButtonVisible();
   }
 }

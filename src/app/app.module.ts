@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms'
 
@@ -24,10 +24,13 @@ import { MapZoomSelectorComponent } from './components/map-view/map-zoom-selecto
 import { GoogleChartsModule } from 'angular-google-charts';
 import { MapOptionMenuComponent } from './components/map-view/map-option-menu/map-option-menu.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatCheckboxModule, MatIconModule} from '@angular/material';
+import {MatButtonModule, MatCheckboxModule, MatIconModule, MatIconRegistry} from '@angular/material';
 import { MapOptionButtonComponent } from './components/map-view/map-option-menu/map-option-button/map-option-button.component';
 import { MapViewRouteFormComponent } from './components/map-view/map-option-menu/map-view-route-form/map-view-route-form.component';
 import { MapViewRouteFormInputComponent } from './components/map-view/map-option-menu/map-view-route-form/map-view-route-form-input/map-view-route-form-input.component';
+import { HttpClientModule } from '@angular/common/http';
+import { MapOptionAreaFindComponent } from './components/map-view/map-option-menu/map-option-area-find/map-option-area-find.component';
+import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
 
 const appRoute: Routes = [
   {
@@ -66,6 +69,7 @@ const appRoute: Routes = [
     MapOptionButtonComponent,
     MapViewRouteFormComponent,
     MapViewRouteFormInputComponent,
+    MapOptionAreaFindComponent,
   ],
   imports: [
     BrowserModule,
@@ -81,9 +85,15 @@ const appRoute: Routes = [
     BrowserAnimationsModule,
     MatButtonModule,
     MatCheckboxModule,
-    MatIconModule
+    MatIconModule,
+    HttpClientModule,
+    AgmJsMarkerClustererModule
   ],
   providers: [MapMetarStationsService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(private matIconRegistry: MatIconRegistry, private domSantinizer: DomSanitizer) {
+    matIconRegistry.addSvgIcon("report_24", domSantinizer.bypassSecurityTrustResourceUrl('/assets/report_24.svg'));
+  }
+}
