@@ -3,7 +3,7 @@
     (zoomChange)="onZoomChange($event)" (mapRightClick)="onRightClickMap($event)">
     <div [ngSwitch]="isAreaFound">
         <div *ngSwitchCase="false">
-            <agm-overlay *ngFor="let item of stationsData" [latitude]="item.lat" [longitude]="item.long">
+            <!-- <agm-overlay *ngFor="let item of stationsData" [latitude]="item.lat" [longitude]="item.long">
                 <div class="d-flex flex-column" [attr.data-lat]="item.lat" [attr.data-long]="item.long"
                     [attr.data-airportCode]="item.airportCode" [attr.data-airportName]="item.airportName"
                     style="cursor: pointer" appStationMarker>
@@ -13,31 +13,39 @@
                     </svg>
                     <span class="station_label">{{ item.airportCode }}</span>
                 </div>
-            </agm-overlay>
+                <agm-info-window>
+                    This is testing
+                </agm-info-window>
+            </agm-overlay> -->
+            <app-map-view-marker
+                *ngFor="let item of stationsData"
+                [latitude]="item.lat" 
+                [longitude]="item.long"
+                [airportCode]="item.airportCode"
+                [airportName]="item.airportName"
+            >
+            </app-map-view-marker>
         </div>
         <agm-marker-cluster *ngSwitchCase="true" imagePath="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m">
-            <agm-overlay *ngFor="let item of areaStationsData" [latitude]="item.lat" [longitude]="item.long">
-                <div class="d-flex flex-column" [attr.data-lat]="item.lat" [attr.data-long]="item.long"
-                    [attr.data-airportCode]="item.airportCode" [attr.data-airportName]="item.airportName"
-                    style="cursor: pointer" appStationMarker>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="fill: red"
-                        transform="translate(0, 9)">
-                        <circle cx="9" cy="9" r="6" />
-                    </svg>
-                    <span class="station_label">{{ item.airportCode }}</span>
-                </div>
-            </agm-overlay>
+            <app-map-view-marker
+                *ngFor="let item of areaStationsData"
+                [latitude]="item.lat" 
+                [longitude]="item.long"
+                [airportCode]="item.airportCode"
+                [airportName]="item.airportName"
+            >
+            </app-map-view-marker>
         </agm-marker-cluster>
     </div>
     <agm-marker *ngFor="let item of circleBoundingPoints" [latitude]="item.lat" [longitude]="item.long">
     </agm-marker>
     <!--testing-->
-    <app-map-view-marker
+    <!-- <app-map-view-marker
         [latitude]="29.292455"
         [longitude]="-86.948235"
         [airportCode]="'HLSS'"
         [airportName]="'HelloStation'"
-    ></app-map-view-marker>
+    ></app-map-view-marker> -->
 </agm-map>
 <app-map-zoom-selector class="col-xl-3 bar-wrapper d-flex flex-column mr-2"
     (zoomMapEvent)="zoomMapEventHandler($event)" style="pointer-events: none"></app-map-zoom-selector>

@@ -95,5 +95,11 @@ const appRoute: Routes = [
 export class AppModule { 
   constructor(private matIconRegistry: MatIconRegistry, private domSantinizer: DomSanitizer) {
     matIconRegistry.addSvgIcon("report_24", domSantinizer.bypassSecurityTrustResourceUrl('/assets/report_24.svg'));
+    matIconRegistry.addSvgIcon("temperature_celsius", domSantinizer.bypassSecurityTrustResourceUrl('./assets/temperature-celsius.svg'));
+    matIconRegistry.addSvgIcon("wind_value", domSantinizer.bypassSecurityTrustResourceUrl('./assets/wind.svg'));
+    matIconRegistry.addSvgIcon("visibility", domSantinizer.bypassSecurityTrustResourceUrl('./assets/visibility.svg'));
+    matIconRegistry.addSvgIcon("altimeter", domSantinizer.bypassSecurityTrustResourceUrl('./assets/altimeter.svg'));
+    matIconRegistry.addSvgIcon("drop", domSantinizer.bypassSecurityTrustResourceUrl('./assets/drop.svg'));
+    matIconRegistry.addSvgIcon("cloud", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud.svg'));
   }
 }
