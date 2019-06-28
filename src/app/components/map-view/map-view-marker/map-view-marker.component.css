@@ -21,3 +21,84 @@
 .font_fifteen{
     font-size: 15px;
 }
+
+.info-div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%) translateY(9px);
+}
+
+.info-div-inner {
+    height: 85px;
+    width: 85px; 
+    border-radius: 85px; 
+    background-color: rgba(255, 215, 0, 0.4);
+    position: relative;
+}
+
+.info-inner-station {
+    position: absolute;
+    top: 85px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.info-inner-observeTime {
+    position: absolute;
+    top: 105px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.info-inner-cloudCover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 1;
+}
+
+.info-inner-windMarker {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);  
+}
+
+.info-inner-windMarkerInner {
+    fill: none;
+    stroke:black;
+    stroke-width: 3;
+}
+
+.info-inner-temperature {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.info-inner-visibility {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%) translateX(70px);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.info-inner-altimeter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%) translateX(-70px);
+    font-size: 14px;
+    white-space: nowrap;
+}

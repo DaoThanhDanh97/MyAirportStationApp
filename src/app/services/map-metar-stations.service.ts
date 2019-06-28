@@ -1,6 +1,7 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import * as mapMetarStations from '../JSON/metar_list.json'
 import { StationDetail } from '../models/station_detail.model';
+import { NgxXml2jsonService } from 'ngx-xml2json';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,9 @@ export class MapMetarStationsService {
 
   getStationToMoveEvent = new EventEmitter<StationDetail>();
 
-  constructor() {
+  flightStationsEvent = new EventEmitter<{departure: string, arrival: string, stationsList: Array<StationDetail>}>();
+
+  constructor(private xmlJson: NgxXml2jsonService) {
   }
 
   getStationsData() {
@@ -114,5 +117,34 @@ export class MapMetarStationsService {
         return distance < radius;
       })
     )
+  }
+
+  onRouteFindAction(departure: string, arrival: string) {
+    let startLoc = this.stations.find(item => item.airportCode == departure);
+    let endLoc = this.stations.find(item => item.airportCode == arrival);
+
+    fetch('https://aviationweather.gov/adds/dataserver_current/httpparam?dataSource=stations&requestType=retrieve&format=xml&flightPath=20;' + startLoc.long + "," + startLoc.lat + ";" + endLoc.long + "," + endLoc.lat)
+      .then(res => res.text())
+      .then(data => {
+        let parser = new DOMParser();
+        let xml = parser.parseFromString(data, 'text/xml');
+        let retrievedJson = <any>{};
+        retrievedJson = this.xmlJson.xmlToJson(xml);
+        //console.log(retrievedJson.response.data.Station);
+        let resultStations = retrievedJson.response.data.Station.map(item => item.station_id);
+        let returnedStations = <any>{};
+        returnedStations = this.stations.filter(item => resultStations.indexOf(item.airportCode) > -1);
+        if(returnedStations.find(item => item.airportCode == departure) == null) {
+          returnedStations.push(startLoc);
+        }
+        if(returnedStations.find(item => item.airportCode == arrival) == null) {
+          returnedStations.push(endLoc);
+        }
+        this.flightStationsEvent.emit({
+          departure: departure,
+          arrival: arrival,
+          stationsList: returnedStations
+        })
+      })
   }
 }

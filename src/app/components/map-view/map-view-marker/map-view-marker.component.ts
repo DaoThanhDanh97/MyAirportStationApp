@@ -13,10 +13,14 @@ export class MapViewMarkerComponent implements OnInit {
   @Input() airportCode: string = "";
   @Input() airportName: string = "";
 
+  markerDisplayValue: string = "flex";
+  infoDisplayValue: string = "none";
+
   isDataLoaded: boolean;
-  transformValue: string = "rotate(0, 3, 0)"
-  flightCategoryColor: string = 'red';
+  flightCategoryColor: string = 'black';
   stationLabelTop: string = '0px';
+
+  svgIconSource: string = "";
 
   jsonResult: any;
 
@@ -33,6 +37,8 @@ export class MapViewMarkerComponent implements OnInit {
   flightCategory: string = "";
   observationValue: string = "";
 
+  transformValue: string = "translate(35px, 35px)";
+
   constructor(private xmlJson: NgxXml2jsonService, private mapMarkerService: MapMarkerService) {
     this.isOpen = false;
   }
@@ -40,11 +46,13 @@ export class MapViewMarkerComponent implements OnInit {
   ngOnInit() {
     this.mapMarkerService.clickEvent.subscribe((data: any) => {
       if(this.airportCode != data.airportCode || this.isOpen == true) {
-        this.isOpen = false;
+        //this.isOpen = false;
+        this.infoDisplayValue = "none";
+        this.markerDisplayValue = "flex";
         return;
       }
       else {
-        this.isOpen = true;
+        //this.isOpen = true;
         this.onInitCall();
       }
     })
@@ -65,18 +73,13 @@ export class MapViewMarkerComponent implements OnInit {
         console.log(this.jsonResult.response.data.METAR);
 
         if(this.jsonResult.response.data.METAR != null) {
-          let firstResult = this.jsonResult.response.data.METAR[0];
+          let firstResult = (Array.isArray(this.jsonResult.response.data.METAR))? this.jsonResult.response.data.METAR[0] : this.jsonResult.response.data.METAR;
           console.log(firstResult);
-  
-          // this.transformValue = "rotate (" + firstResult.wind_dir_degrees + ", 3, 0)";
-          // this.flightCategoryColor = this.setFlightCategoryColor(firstResult.flight_category);
-          // console.log(this.calculateStationTop(parseFloat(firstResult.wind_dir_degrees)));
-          // this.stationLabelTop = this.calculateStationTop(parseFloat(firstResult.wind_dir_degrees));
           this.temperatureValue = parseFloat(firstResult.temp_c);
           this.windDegreeValue = parseInt(firstResult.wind_dir_degrees);
           this.windSpeedValue = firstResult.wind_speed_kt + " kt";
-          this.visibilityValue = firstResult.visibility_statute_mi + " mi";
-          this.altimeterValue = parseFloat(firstResult.altim_in_hg);
+          this.visibilityValue = firstResult.visibility_statute_mi;
+          this.altimeterValue = parseFloat(parseFloat(firstResult.altim_in_hg).toFixed(2));
           this.dewPointValue = firstResult.dewpoint_c;
           // firstResult.sky_condition;
           if(Array.isArray(firstResult.sky_condition)) {
@@ -91,7 +94,11 @@ export class MapViewMarkerComponent implements OnInit {
           this.flightCategory = firstResult.flight_category;
           this.observationValue = this.getObservationStringFromDate(new Date(firstResult.observation_time));
           this.flightCategoryColor = this.setFlightCategoryColor(firstResult.flight_category);
+          this.svgIconSource = this.getSourceIcon(this.cloudCoverValue);
+          this.transformValue = this.getTransformValue(this.windDegreeValue);
           this.isDataLoaded = true;
+          this.infoDisplayValue = "flex";
+          this.markerDisplayValue = "none";
         }
         else {
           this.isDataLoaded = false;
@@ -108,11 +115,15 @@ export class MapViewMarkerComponent implements OnInit {
     }
   }
 
-  calculateStationTop(value: number) {
-    let deg2rad = (90 - value) * 2 * Math.PI / 360;
-    let topValue = 24 * (1 + (1 - Math.sin(deg2rad)));
-    console.log(1 + (1 - Math.sin(deg2rad)));
-    return topValue + "px";
+  getSourceIcon(category: string) {
+    switch(category) {
+      case "CLR": return "cloud_CLR";
+      case "FEW": return "cloud_FEW";
+      case "SCT": return "cloud_SCT";
+      case "BKN": return "cloud_BKN";
+      case "OVC": return "cloud_OVC";
+      default: return "";
+    }
   }
 
   getObservationStringFromDate(dateValue: Date) {
@@ -122,5 +133,9 @@ export class MapViewMarkerComponent implements OnInit {
     let secondsValue = (dateValue.getSeconds() < 10)? ("0" + dateValue.getSeconds()) : dateValue.getSeconds();
     return hoursValue + ":" + minutesValue + ":" + secondsValue + " GMT"
       + symbolValue + Math.abs(dateValue.getTimezoneOffset()/60);
+  }
+
+  getTransformValue(value: number) {
+    return "translate(35px, 35px) " + "rotate(" + value + "deg)"
   }
 }

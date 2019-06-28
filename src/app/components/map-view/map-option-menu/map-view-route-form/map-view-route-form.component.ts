@@ -82,6 +82,7 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
   }
 
   onItemClick(item: any) {
+    this.resultListDisplay = 'none';
     if (this.currentSearchLocation == 'flightSearchDeparture') {
       this.finalDeparture = item.airportCode;
       this.inputDepartureDisplay = 'none';
@@ -147,5 +148,9 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
 
   onFlightButtonVisibleCheck() {
     this.isSearchResultVisible = (this.finalArrival != '' && this.finalDeparture != '')? 'visible' : 'hidden';
+  }
+
+  onRouteFindAction() {
+    this.mapMetarStationsEvent.onRouteFindAction(this.finalDeparture, this.finalArrival);
   }
 }

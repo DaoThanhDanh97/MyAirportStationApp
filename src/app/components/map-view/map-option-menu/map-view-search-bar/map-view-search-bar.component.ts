@@ -25,6 +25,9 @@ export class MapViewSearchBarComponent implements OnInit {
 
   isInited: boolean;
 
+  //code 4 chu de search tren api
+  resultAirportCode: string;
+
   @ViewChild(SearchLineDirective) appMapViewSearchBar: SearchLineDirective;
 
   constructor(private mapMetarStationsService: MapMetarStationsService, 
@@ -62,6 +65,8 @@ export class MapViewSearchBarComponent implements OnInit {
   onItemClick(data: any) {
     this.mapMetarStationsService.getMoveDestination(data.airportCode);
     this.resultValue = data.airportName + " (" + data.airportCode + ")";
+    //update result theo ket qua
+    this.resultAirportCode = data.airportCode;
     this.inputDisplay = 'none';
     this.resultDivDisplay = 'block';
     this.onResultChange([]);
@@ -70,6 +75,8 @@ export class MapViewSearchBarComponent implements OnInit {
   onResultDivClick() {
     this.inputValue = '';
     this.resultValue = '';
+    //refresh airportCode
+    this.resultAirportCode = '';
     this.inputDisplay = 'block';
     this.resultDivDisplay = 'none';
     this.mapResetService.onMapResetTrigger();
@@ -78,5 +85,10 @@ export class MapViewSearchBarComponent implements OnInit {
 
   onModeChange(value: any) {
     this.mapOptionSelectService.onMapOptionSelectedEvent(value);
+  }
+
+  on24hClick() {
+    //fetch api tu awc voi hoursBeforeNow = 24
+    
   }
 }

@@ -29,6 +29,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   boundaryData: Array<Array<LatLngLiteral>> = [];
   stationsData: Array<StationDetail> = [];
+  flightResultData: Array<StationDetail> = [];
 
   startAirport: string = '';
   arriveAirport: string = '';
@@ -60,7 +61,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //airport mode
   modeSelected: string = '';
-
+  isPathFound: boolean = false;
 
   constructor(private mapStateBoundaryService: MapStateBoundaryService,
     private mapMetarStationsService: MapMetarStationsService,
@@ -75,17 +76,23 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.mapStateBoundaryService.mapData.subscribe(data => {
-      this.boundaryData = data;
+      if (!this.isPathFound) {
+        this.boundaryData = data;
+      }
     })
 
     this.mapMetarStationsService.stationsEvent.subscribe(data => {
-      if(this.circleLayer == null || this.circleLayer.getVisible() == false) {
+      if (this.circleLayer == null || this.circleLayer.getVisible() == false) {
         this.stationsData = data;
         this.areaStationsData = [];
       }
       else {
         this.stationsData = [];
         this.areaStationsData = data;
+      }
+      if (this.isPathFound) {
+        this.stationsData = [];
+        this.areaStationsData = [];
       }
     });
 
@@ -121,16 +128,12 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
       if (this.modeSelected == 'airport_find') {
         this.mapMarkerService.onAirportModeClickEvent(data);
-      }
-
-      // alert(
-      //   'Observation Time: ' + data.observationTime + '\n' + 'Altimeter: ' + data.altimeterSetting + '\n' + 'Dew Point: ' + data.dewPoint + + '\n' + 'Temperature (celcius): ' + data.temperature + '\n' + 'Wind Speed (knot)' + data.windSpeedKt + '\n' + 'Visibility Statue (miles): ' + data.visibilityStatueMiles + '\n' + 'Wind Degree: ' + data.windDegree + '\n' + 'Sky Condition: ' + data.skyCondition.map(item => JSON.stringify(item)).join(",") + '\n' + "Flight Category: " + data.flightCategory
-      // );
+      };
       console.log(data);
     })
 
     this.mapMarkerService.doubleClickEvent.subscribe((data: any) => {
-      if(this.startAirport == '') {
+      if (this.startAirport == '') {
         this.startAirport = data.airportCode;
       }
       else if (this.arriveAirport == '') {
@@ -145,6 +148,20 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mapResetService.areaResetEvent.subscribe(() => {
       this.circleBoundingPoints = [];
       this.updateMode(this.modeSelected);
+    })
+
+    this.mapMetarStationsService.flightStationsEvent.subscribe((data: any) => {
+      this.flightResultData = data.stationsList;
+      this.isPathFound = true;
+      this.stationsData = [];
+      this.areaStationsData = [];
+      this.mapView.fitBounds(
+        new google.maps.LatLngBounds(
+          new google.maps.LatLng(Math.min(...data.stationsList.map(item => item.lat)), Math.min(...data.stationsList.map(item => item.long))),
+          new google.maps.LatLng(Math.max(...data.stationsList.map(item => item.lat)), Math.max(...data.stationsList.map(item => item.long)))
+        )
+        //]
+      )
     })
   }
 
@@ -197,7 +214,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         //console.log(event.feature.getProperty('STATE_ABBR'));
         this.mapMetarStationsService.setClickTrigger(true);
 
-        if(this.modeSelected === 'area_find' && this.circleLayer != null && this.circleLayer.getVisible() == true) return;
+        if (this.modeSelected === 'area_find' && this.circleLayer != null && this.circleLayer.getVisible() == true) return;
 
         this.mapStateInfoService.getStateToChange(event.feature.getProperty('STATE_ABBR'));
       })
@@ -223,7 +240,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       })
 
       this.circleLayer.addListener('center_changed', (event: any) => {
-        if(this.circleLayer.getVisible() != false) {
+        if (this.circleLayer.getVisible() != false) {
           this.circleBoundingPoints = [];
           this.mapMetarStationsService.setClickTrigger(true);
           this.mapMetarStationsService.getBoundingAreaClickEvent(this.circleLayer.getCenter().lat(), this.circleLayer.getCenter().lng(), this.circleLayer.getRadius());
@@ -238,7 +255,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       })
 
       this.circleLayer.addListener('radius_changed', () => {
-        if(this.circleLayer.getVisible() != false) {
+        if (this.circleLayer.getVisible() != false) {
           this.circleBoundingPoints = [];
           this.mapMetarStationsService.setClickTrigger(true);
           this.mapMetarStationsService.getBoundingAreaClickEvent(this.circleLayer.getCenter().lat(), this.circleLayer.getCenter().lng(), this.circleLayer.getRadius());
@@ -353,11 +370,13 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.circleBoundingPoints = [];
     this.circleLayer.setOptions({
       visible: false,
-      center: {lat: 0, lng: 0},
+      center: { lat: 0, lng: 0 },
       radius: 0,
     })
     this.isAreaFound = false;
     this.areaStationsData = [];
+    this.flightResultData = [];
+    this.isPathFound = false;
     //this.mapMetarStationsService.onBoundaryChange(this.mapView.get)
   }
 }

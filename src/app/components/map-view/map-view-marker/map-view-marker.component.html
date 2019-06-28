@@ -1,58 +1,40 @@
 <agm-overlay [latitude]="latitude" [longitude]="longitude">
-    <div class="d-flex flex-column" [attr.data-lat]="latitude" [attr.data-long]="longitude"
+    <div class="flex-column" [attr.data-lat]="latitude" [attr.data-long]="longitude"
         [attr.data-airportCode]="airportCode" [attr.data-airportName]="airportName" style="cursor: pointer"
-        appStationMarker>
+        appStationMarker [ngStyle]="{'display': markerDisplayValue}">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="fill: red" transform="translate(0, 9)">
             <circle cx="9" cy="9" r="6" />
         </svg>
         <span class="station_label">{{ airportCode }}</span>
     </div>
-    <agm-info-window [ngSwitch]="isDataLoaded" [isOpen]="isOpen">
-        <div *ngSwitchCase="false">No Data Available</div>
-        <div *ngSwitchCase="true">
-            <div class="container">
-                <div class="text-center" style="font-size: 15px">Observation Time: {{ observationValue }}</div>
-                <div class="d-flex flex-row">
-                    <div class="col d-flex flex-row align-items-center">
-                        <mat-icon svgIcon="temperature_celsius" style="height: 36px; width: 36px"></mat-icon>
-                        <span style="font-size: 15px">{{ temperatureValue }}</span>
-                    </div>
-                    <div class="col d-flex flex-row align-items-center">
-                        <mat-icon svgIcon="wind_value" style="height: 36px; width: 36px"></mat-icon>
-                        <div class="d-flex flex-column">
-                            <span style="font-size: 15px">{{ windDegreeValue }}</span>
-                            <span style="font-size: 15px">{{ windSpeedValue }}</span>
-                        </div>
-                    </div>
-                    <div class="col d-flex flex-row align-items-center">
-                        <mat-icon svgIcon="visibility" style="height: 36px; width: 36px"></mat-icon>
-                        <span style="font-size: 15px">{{ visibilityValue }}</span>
-                    </div>
-                </div>
-                <div class="d-flex flex-row">
-                    <div class="col d-flex flex-row align-items-center">
-                        <mat-icon svgIcon="altimeter" style="height: 36px; width: 36px"></mat-icon>
-                        <span style="font-size: 15px">{{ altimeterValue }}</span>
-                    </div>
-                    <div class="col d-flex flex-row align-items-center">
-                        <mat-icon svgIcon="drop" style="height: 36px; width: 36px"></mat-icon>
-                        <span style="font-size: 15px">{{ dewPointValue }}</span>
-                    </div>
-                    <div class="col d-flex flex-row align-items-center">
-                        <mat-icon svgIcon="cloud" style="height: 36px; width: 36px"></mat-icon>
-                        <div class="d-flex flex-column">
-                            <span style="font-size: 15px">{{ cloudCoverValue }}</span>
-                            <span style="font-size: 15px">{{ cloudFtValue }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center font_fifteen" [ngStyle]="{'color': flightCategoryColor}">Flight Category: {{ flightCategory }}</div>
+    <div class="info-div" [ngStyle]="{'display': infoDisplayValue}">
+        <div class="info-div-inner">
+            <div class="info-inner-station" [ngStyle]="{color: flightCategoryColor}">
+                {{airportCode}} ({{windSpeedValue}})
+            </div>
+            <div class="info-inner-observeTime">
+                {{observationValue}}
+            </div>
+            <div class="info-inner-cloudCover">
+                <mat-icon [svgIcon]="svgIconSource"></mat-icon>
+            </div>
+            <div class="info-inner-windMarker">
+                <svg width="70" height="70" style="overflow: visible;">
+                    <polyline class="info-inner-windMarkerInner" points="-10,-20 0,-35, 0,0 0,-35 10,-20" [ngStyle]="{'transform': transformValue}"/>
+                    Sorry, your browser does not support inline SVG.
+                </svg>
+            </div>
+            <div class="info-inner-temperature">
+                {{temperatureValue}} / {{dewPointValue}}
+            </div>
+            <div class="info-inner-visibility d-flex flex-row align-items-center">
+                <mat-icon svgIcon="visibility" style="height: 24px; width: 24px"></mat-icon>
+                {{visibilityValue}}
+            </div>
+            <div class="info-inner-altimeter d-flex flex-row align-items-center">
+                <mat-icon svgIcon="altimeter" style="height: 24px; width: 24px"></mat-icon>
+                {{altimeterValue}}
             </div>
         </div>
-        <div *ngSwitchDefault>
-            <div class="spinner-border text-dark" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-    </agm-info-window>
+    </div>
 </agm-overlay>

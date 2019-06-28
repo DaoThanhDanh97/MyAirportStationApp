@@ -100,6 +100,11 @@ export class AppModule {
     matIconRegistry.addSvgIcon("visibility", domSantinizer.bypassSecurityTrustResourceUrl('./assets/visibility.svg'));
     matIconRegistry.addSvgIcon("altimeter", domSantinizer.bypassSecurityTrustResourceUrl('./assets/altimeter.svg'));
     matIconRegistry.addSvgIcon("drop", domSantinizer.bypassSecurityTrustResourceUrl('./assets/drop.svg'));
+    matIconRegistry.addSvgIcon("cloud_CLR", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_CLR.svg'));
+    matIconRegistry.addSvgIcon("cloud_FEW", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_FEW.svg'));
+    matIconRegistry.addSvgIcon("cloud_SCT", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_SCT.svg'));
+    matIconRegistry.addSvgIcon("cloud_BKN", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_BKN.svg'));
+    matIconRegistry.addSvgIcon("cloud_OVC", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_OVC.svg'));
     matIconRegistry.addSvgIcon("cloud", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud.svg'));
   }
 }
