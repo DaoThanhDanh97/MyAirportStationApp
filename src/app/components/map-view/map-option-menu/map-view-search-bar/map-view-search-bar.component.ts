@@ -6,7 +6,10 @@ import { InputServiceService } from 'src/app/services/input-service.service';
 import { MapResetService } from 'src/app/services/map-reset.service';
 import { MapMarkerService } from 'src/app/services/map-marker.service';
 import { MapOptionSelectService } from 'src/app/services/map-option-select.service';
-
+import { NgxXml2jsonService } from 'ngx-xml2json';
+import {Subject} from 'rxjs'
+import { Data24hService} from 'src/app/services/data-24h.service';
+import {DashboardService} from'src/app/services/dashboard.service';
 @Component({
   selector: 'app-map-view-search-bar',
   templateUrl: './map-view-search-bar.component.html',
@@ -28,13 +31,19 @@ export class MapViewSearchBarComponent implements OnInit {
   //code 4 chu de search tren api
   resultAirportCode: string;
 
+  airportCode: string;
+
+  jsonResult: any;
   @ViewChild(SearchLineDirective) appMapViewSearchBar: SearchLineDirective;
 
   constructor(private mapMetarStationsService: MapMetarStationsService, 
     private inputService: InputServiceService,
     private mapResetService: MapResetService,
     private mapMarkerService: MapMarkerService,
-    private mapOptionSelectService: MapOptionSelectService
+    private mapOptionSelectService: MapOptionSelectService,
+    private xmlJson: NgxXml2jsonService,
+    private data24service: Data24hService,
+    private dashboardService: DashboardService
   ) {
     this.resultListDisplay = 'none';
     this.resultDivDisplay = 'none';
@@ -67,6 +76,7 @@ export class MapViewSearchBarComponent implements OnInit {
     this.resultValue = data.airportName + " (" + data.airportCode + ")";
     //update result theo ket qua
     this.resultAirportCode = data.airportCode;
+    this.airportCode = data.airportCode;
     this.inputDisplay = 'none';
     this.resultDivDisplay = 'block';
     this.onResultChange([]);
@@ -77,6 +87,7 @@ export class MapViewSearchBarComponent implements OnInit {
     this.resultValue = '';
     //refresh airportCode
     this.resultAirportCode = '';
+    this.airportCode = '';
     this.inputDisplay = 'block';
     this.resultDivDisplay = 'none';
     this.mapResetService.onMapResetTrigger();
@@ -87,8 +98,21 @@ export class MapViewSearchBarComponent implements OnInit {
     this.mapOptionSelectService.onMapOptionSelectedEvent(value);
   }
 
-  on24hClick() {
-    //fetch api tu awc voi hoursBeforeNow = 24
-    
+  on24hclick(){
+    fetch('https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=' + this.airportCode + '&hoursBeforeNow=24')
+    .then(data => data.text())
+    .then(data => {
+      let parser = new DOMParser();
+      let xml = parser.parseFromString(data, 'text/xml');
+      this.jsonResult = this.xmlJson.xmlToJson(xml);
+
+      console.log(this.jsonResult.response.data.METAR);
+
+      this.data24service.saveData(this.jsonResult.response.data.METAR)
+      console.log("Showing Dashboard modal.....")
+      this.dashboardService.onModalShowUpTrigger('dashboard-modal')
+    })
   }
+
+
 }

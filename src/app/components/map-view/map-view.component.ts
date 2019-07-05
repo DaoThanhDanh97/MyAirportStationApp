@@ -1,17 +1,19 @@
+import { DashboardService } from './../../services/dashboard.service';
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { AgmMap, LatLngLiteral, LatLngBounds, AgmCircle } from '@agm/core';
-import { MapStateBoundaryService } from '../../services/map-state-boundary.service'
+import { MapStateBoundaryService } from '../../services/map-state-boundary.service';
 import { MapMetarStationsService } from '../../services/map-metar-stations.service';
 import { StationDetail } from 'src/app/models/station_detail.model';
-import { MapStateInfoService } from '../../services/map-state-info.service'
+import { MapStateInfoService } from '../../services/map-state-info.service';
 
 import * as stateCentersDetail from '../../JSON/state_center.json';
 import { SpinnerLayerDirective } from 'src/app/directives/spinner-layer.directive';
 import { MapResetService } from 'src/app/services/map-reset.service';
 import { MapMarkerService } from 'src/app/services/map-marker.service';
 import { MapOptionMenuComponent } from './map-option-menu/map-option-menu.component';
+import { ModalComponent}  from './modal-component/modal-component.component';
 import { MapOptionSelectService } from 'src/app/services/map-option-select.service';
-
+import {ModalService} from 'src/app/services/modal-service.service';
 const earthRadius: number = 6371000;
 
 @Component({
@@ -68,7 +70,9 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private mapStateInfoService: MapStateInfoService,
     private mapResetService: MapResetService,
     private mapMarkerService: MapMarkerService,
-    private mapOptionSelectService: MapOptionSelectService) {
+    private mapOptionSelectService: MapOptionSelectService,
+    private modalService: ModalService,
+    private dashboardService: DashboardService) {
     this.circleLat = this.lat;
     this.circleLong = this.long;
     this.modeSelected = 'airport_find';
@@ -145,6 +149,11 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       this.updateMode(value);
     })
 
+    this.dashboardService.modalShowUp.subscribe((value: string) => {
+      this.openModal(value);
+      
+    })
+
     this.mapResetService.areaResetEvent.subscribe(() => {
       this.circleBoundingPoints = [];
       this.updateMode(this.modeSelected);
@@ -214,7 +223,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         //console.log(event.feature.getProperty('STATE_ABBR'));
         this.mapMetarStationsService.setClickTrigger(true);
 
-        if (this.modeSelected === 'area_find' && this.circleLayer != null && this.circleLayer.getVisible() == true) return;
+        if(this.modeSelected === 'area_find' && this.circleLayer != null && this.circleLayer.getVisible() == true) return;
 
         this.mapStateInfoService.getStateToChange(event.feature.getProperty('STATE_ABBR'));
       })
@@ -255,7 +264,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       })
 
       this.circleLayer.addListener('radius_changed', () => {
-        if (this.circleLayer.getVisible() != false) {
+        if(this.circleLayer.getVisible() != false) {
           this.circleBoundingPoints = [];
           this.mapMetarStationsService.setClickTrigger(true);
           this.mapMetarStationsService.getBoundingAreaClickEvent(this.circleLayer.getCenter().lat(), this.circleLayer.getCenter().lng(), this.circleLayer.getRadius());
@@ -288,6 +297,15 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mapMetarStationsService.stationsEvent.unsubscribe();
   }
 
+  openModal(id: string) {
+    this.modalService.open(id);
+    console.log("Open " + id)
+
+  }
+
+  closeModal(id: string) {
+      this.modalService.close(id);
+  }
   onPointClick() {
     console.log("Point clicked");
   }

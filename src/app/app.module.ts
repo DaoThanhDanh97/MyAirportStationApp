@@ -1,5 +1,6 @@
+
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms'
 
 import { AppComponent } from './app.component';
@@ -15,6 +16,8 @@ import { StationSelectorDirective } from './directives/station-selector.directiv
 import { StationMarkerDirective } from './directives/station-marker.directive';
 import { MapViewSpinnerComponent } from './components/map-view/map-view-spinner/map-view-spinner.component';
 import { SpinnerLayerDirective } from './directives/spinner-layer.directive';
+
+
 import { MapViewSearchBarComponent } from './components/map-view/map-option-menu/map-view-search-bar/map-view-search-bar.component';
 import { SearchLineDirective } from './directives/search-line.directive';
 import { MapMetarStationsService } from './services/map-metar-stations.service';
@@ -31,6 +34,10 @@ import { MapViewRouteFormInputComponent } from './components/map-view/map-option
 import { HttpClientModule } from '@angular/common/http';
 import { MapOptionAreaFindComponent } from './components/map-view/map-option-menu/map-option-area-find/map-option-area-find.component';
 import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
+import { ModalComponent } from './components/map-view/modal-component/modal-component.component';
+
+
+
 
 const appRoute: Routes = [
   {
@@ -70,6 +77,9 @@ const appRoute: Routes = [
     MapViewRouteFormComponent,
     MapViewRouteFormInputComponent,
     MapOptionAreaFindComponent,
+    ModalComponent,
+    
+  
   ],
   imports: [
     BrowserModule,
