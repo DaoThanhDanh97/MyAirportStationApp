@@ -1,0 +1,19 @@
+.noBoxShadow {
+    box-shadow: none;
+}
+
+.ul-layer {
+    z-index: 1;
+    position: absolute;
+    width: inherit;
+    max-height: 200px
+}
+
+.form_transpbg {
+    background: transparent
+}
+
+.form_pointerAvailable {
+   pointer-events: visible 
+}
+

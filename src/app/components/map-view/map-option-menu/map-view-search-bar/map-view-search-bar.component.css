@@ -1,0 +1,41 @@
+.no-lower-margin {
+    margin-bottom: 0px !important
+}
+
+.wrap-flex {
+    display: flex;
+    flex-wrap: wrap
+}
+
+.top-padded {
+    padding-top: calc(.375rem + 1px)
+}
+
+.form-view {
+    background: rgba(255, 255, 255, 0.5); 
+    border-radius: 0.5rem; 
+    padding: 1rem 0px;
+    border: 1px solid #536b83
+}
+
+.btn-circle {
+    height: 40px !important;
+    width: 40px !important;
+    border-radius: 40px !important;
+}
+
+.ul-layer {
+    z-index: 1;
+    position: absolute;
+    width: inherit;
+}
+
+input {    
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.input-bar {
+    font-size: 20px; 
+    border: none
+}

@@ -1,0 +1,54 @@
+.btn-circle {
+    height: 40px !important;
+    width: 40px !important;
+    border-radius: 40px !important;
+}
+
+.btn-circle-station-active {
+    background-color: #007bff;
+    color: white;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.btn-circle-station {
+    background-color: white;
+    color: #007bff;
+    border: 1px solid #007bff;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.btn-circle-route-active {
+    background-color: #ffc107;
+    color: white;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.btn-circle-route {
+    background-color: white;
+    color: #ffc107;
+    border: 1px solid #ffc107;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.btn-circle-area-active {
+    background-color: #dc3545;
+    color: white;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.btn-circle-area {
+    background-color: white;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    outline: 0;
+    box-shadow: none !important;
+}
+
+.pointerEvent_available {
+    pointer-events: visible
+}

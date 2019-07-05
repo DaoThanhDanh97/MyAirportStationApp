@@ -1,0 +1,16 @@
+.small-zoom {
+    background: rgb(167, 255, 167)
+}
+
+.normal-zoom {
+    background: rgb(255, 255, 116)
+}
+
+.large-zoom {
+    background: #9d2323
+}
+
+.selection-height {
+    height: 20px;
+    width: 30px
+}

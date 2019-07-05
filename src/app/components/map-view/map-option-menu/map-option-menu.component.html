@@ -1,0 +1,5 @@
+<div [ngSwitch]="selectedOption">
+  <app-map-view-search-bar *ngSwitchCase="'airport_find'"></app-map-view-search-bar>
+  <app-map-view-route-form *ngSwitchCase="'flight_find'"></app-map-view-route-form>
+  <app-map-option-area-find *ngSwitchCase="'area_find'"></app-map-option-area-find>
+</div>

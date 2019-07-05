@@ -1,0 +1,19 @@
+.ul-layer {
+    z-index: 1;
+    position: absolute;
+    width: inherit;
+    max-height: 200px
+}
+
+.wrap-flex {
+    display: flex;
+    flex-wrap: wrap
+}
+
+.no-border-box {
+    box-shadow: none
+}
+
+.transP_bg {
+    background: transparent
+}

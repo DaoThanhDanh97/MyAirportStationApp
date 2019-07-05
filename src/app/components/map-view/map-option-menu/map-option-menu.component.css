@@ -1,0 +1,22 @@
+.flexWrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media(max-width: 576px) {
+    .wrapperDiv {
+        flex-direction: row;
+        display: flex;
+    }
+}
+
+@media(min-width: 576px) {
+    .wrapperDiv {
+        flex-direction: column;
+        display: flex;
+    } 
+}
+
+.form-wrapper {
+    pointer-events: none
+}

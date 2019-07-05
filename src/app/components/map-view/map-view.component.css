@@ -1,0 +1,54 @@
+.stationPoint {
+    padding: 0px;
+    margin: 0px;
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    background-color: red
+}
+
+.form-wrapper {
+    position: absolute; 
+    top: 0px; 
+    left: 0px; 
+    padding: 10px;
+    pointer-events: none
+}
+
+.bar-wrapper {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    padding-bottom: 20px;
+    padding-right: 50px;
+}
+
+.mapViewSpinner {
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(40,40,40,0.8);
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center
+}
+
+.no_pointerEvent {
+    pointer-events: none;
+}
+
+.outline_red {
+    font-family: 'Material Icons Outlined';
+    color: 'red'
+}
+
+.station_label {
+    color: #645edf; 
+    font-size: 15px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 1.5rem
+}
