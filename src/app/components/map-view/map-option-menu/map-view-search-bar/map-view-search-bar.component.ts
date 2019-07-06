@@ -110,7 +110,8 @@ export class MapViewSearchBarComponent implements OnInit {
 
       this.data24service.saveData(this.jsonResult.response.data.METAR)
       console.log("Showing Dashboard modal.....")
-      this.dashboardService.onModalShowUpTrigger('dashboard-modal')
+      this.dashboardService.onModalShowUpTrigger('dashboard-modal');
+      this.data24service.getTemperature();
     })
   }
 

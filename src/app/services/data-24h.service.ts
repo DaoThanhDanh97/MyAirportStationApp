@@ -19,6 +19,12 @@ export class Data24hService {
     }))
   }
 
+  getDewPoint(){
+    return (_.map(this.data, function(item) {
+      return _.pick(item, "observation_time","dewpoint_c");
+    }))
+  }
+
   getTemperature(){
     return (_.map(this.data, function(item) {
       return _.pick(item, "observation_time","temp_c");

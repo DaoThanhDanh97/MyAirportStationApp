@@ -35,8 +35,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { MapOptionAreaFindComponent } from './components/map-view/map-option-menu/map-option-area-find/map-option-area-find.component';
 import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
 import { ModalComponent } from './components/map-view/modal-component/modal-component.component';
-
-
+import { AppDataModalComponent } from './components/app-data-modal/app-data-modal.component';
+import { TemperatureChartComponent } from './components/app-data-modal/temperature-chart/temperature-chart.component';
+import { AltimeterChartComponent } from './components/app-data-modal/altimeter-chart/altimeter-chart.component';
+import { DewpointChartComponent } from './components/app-data-modal/dewpoint-chart/dewpoint-chart.component';
 
 
 const appRoute: Routes = [
@@ -78,6 +80,10 @@ const appRoute: Routes = [
     MapViewRouteFormInputComponent,
     MapOptionAreaFindComponent,
     ModalComponent,
+    AppDataModalComponent,
+    TemperatureChartComponent,
+    AltimeterChartComponent,
+    DewpointChartComponent,
     
   
   ],

@@ -16,11 +16,6 @@
     </app-map-view-marker>
     <agm-marker *ngFor="let item of circleBoundingPoints" [latitude]="item.lat" [longitude]="item.long">
     </agm-marker>
-    
-    <jw-modal id="dashboard-modal">
-        <h1>A Custom Modal!</h1>
-        <button (click)="closeModal('dashboard-modal');">Close</button>
-    </jw-modal>
 </agm-map>
 <app-map-zoom-selector class="col-xl-3 bar-wrapper d-flex flex-column mr-2" (zoomMapEvent)="zoomMapEventHandler($event)"
     style="pointer-events: none"></app-map-zoom-selector>
