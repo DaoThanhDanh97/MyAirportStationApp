@@ -15,34 +15,32 @@ export class MapMetarStationsService {
 
   isModifiedByClickAction: boolean = false;
 
-  stationsByStateEvent = new EventEmitter<Array<{airportName: string, airportCode: string}>>();
+  stationsByStateEvent = new EventEmitter<Array<{ airportName: string, airportCode: string }>>();
 
   mapMoveByClickEvent = new EventEmitter<string>();
 
   stationChangeEvent = new EventEmitter<string>();
 
-  stationsByInputEvent = new EventEmitter<{result: Array<{airportName: string, airportCode: string}>, inputSource: string}>();
+  stationsByInputEvent = new EventEmitter<{ result: Array<{ airportName: string, airportCode: string }>, inputSource: string }>();
 
   getStationToMoveEvent = new EventEmitter<StationDetail>();
 
-  flightStationsEvent = new EventEmitter<{departure: string, arrival: string, stationsList: Array<StationDetail>}>();
+  flightStationsEvent = new EventEmitter<{ departure: StationDetail, arrival: StationDetail, stationsList: Array<StationDetail> }>();
 
   constructor(private xmlJson: NgxXml2jsonService) {
   }
 
   getStationsData() {
     mapMetarStations.default.map(item => {
-      this.stations.push(new StationDetail(item.latitude, item.longitude,item.is_international, item.airportCode, item.major, item.stateName, item.stateAbbr, item.airportName));
+      this.stations.push(new StationDetail(item.latitude, item.longitude, item.is_international, item.airportCode, item.major, item.stateName, item.stateAbbr, item.airportName));
     })
 
     this.stationsEvent.emit(this.stations.filter(item => item.isMajor == true).slice());
   }
 
   onBoundaryChange(boundary: any, zoomLevel: number) {
-    console.log(zoomLevel);
-    console.log(this.clickTrigger);
-    if(this.clickTrigger == false) {
-      if(zoomLevel < 8) {
+    if (this.clickTrigger == false) {
+      if (zoomLevel < 8) {
         this.stationsEvent.emit(this.stations.filter(item => item.isMajor == true));
       }
       else if (zoomLevel < 10) {
@@ -59,10 +57,8 @@ export class MapMetarStationsService {
   }
 
   onStateChange(state: string) {
-    console.log(this.clickTrigger);
-
     this.stationsEvent.emit(
-      (this.clickTrigger == true)? this.stations.filter(item => item.stateAbbr == state) : this.stations.filter(item => item.isMajor == true)
+      (this.clickTrigger == true) ? this.stations.filter(item => item.stateAbbr == state) : this.stations.filter(item => item.isMajor == true)
     );
 
     //move map
@@ -76,12 +72,12 @@ export class MapMetarStationsService {
   onInputChange(station: string, src: string) {
     let lowerCase = station.toLowerCase();
 
-    if(lowerCase.length > 3) {
+    if (lowerCase.length > 3) {
       this.stationsByInputEvent.emit({
         result: this.stations.filter(item => item.airportCode.toLowerCase().indexOf(lowerCase) == 0 || item.airportName.toLowerCase().indexOf(lowerCase) == 0).map(item => {
           return {
             airportName: item.airportName,
-            airportCode: item.airportCode        
+            airportCode: item.airportCode
           }
         }),
         inputSource: src
@@ -130,21 +126,23 @@ export class MapMetarStationsService {
         let xml = parser.parseFromString(data, 'text/xml');
         let retrievedJson = <any>{};
         retrievedJson = this.xmlJson.xmlToJson(xml);
-        //console.log(retrievedJson.response.data.Station);
         let resultStations = retrievedJson.response.data.Station.map(item => item.station_id);
         let returnedStations = <any>{};
-        returnedStations = this.stations.filter(item => resultStations.indexOf(item.airportCode) > -1);
-        if(returnedStations.find(item => item.airportCode == departure) == null) {
-          returnedStations.push(startLoc);
-        }
-        if(returnedStations.find(item => item.airportCode == arrival) == null) {
-          returnedStations.push(endLoc);
-        }
+        returnedStations = this.stations.filter(item => resultStations.indexOf(item.airportCode) > -1)
+          .filter(item => item.airportCode != departure && item.airportCode != arrival);
+
+        let departureStation = this.stations.find(item => item.airportCode == departure);
+        let arrivalStation = this.stations.find(item => item.airportCode == arrival);
+
         this.flightStationsEvent.emit({
-          departure: departure,
-          arrival: arrival,
+          departure: departureStation,
+          arrival: arrivalStation,
           stationsList: returnedStations
         })
       })
+  }
+
+  getSingleStationData(station: string) {
+    return this.stations.find(item => item.airportCode == station);
   }
 }

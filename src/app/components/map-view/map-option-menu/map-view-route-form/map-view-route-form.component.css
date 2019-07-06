@@ -57,3 +57,7 @@ ul li:nth-last-child(1) div {
     color: #25519d;
     padding-top: 1rem;
 }
+
+.click-visible {
+    pointer-events: visible;
+}

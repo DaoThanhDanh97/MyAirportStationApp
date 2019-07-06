@@ -15,6 +15,8 @@ export class MapMarkerService {
   airportModeEvent = new EventEmitter<any>();
   routeModeEvent = new EventEmitter<any>();
 
+  flightMarkerLoadComplete = new EventEmitter<any>();
+
   constructor() { }
 
   onClickEvent(data: any) {

@@ -1,0 +1,23 @@
+<agm-overlay [latitude]="latitude" [longitude]="longitude" zIndex="3">
+  <div class="d-flex info-div">
+    <div class="info-div-inner">
+      <div class="info-inner-station" [ngStyle]="{color: flightCategoryColor}">
+        {{airportCode}} ({{windSpeedValue}})
+      </div>
+      <div class="info-inner-cloudCover">
+        <mat-icon [svgIcon]="svgIconSource"></mat-icon>
+      </div>
+      <div class="info-inner-windMarker">
+        <svg width="70" height="70" style="overflow: visible;">
+          <polyline class="info-inner-windMarkerInner" points="-10,-20 0,-35, 0,0 0,-35 10,-20"
+            [ngStyle]="{'transform': transformValue}" />
+          Sorry, your browser does not support inline SVG.
+        </svg>
+      </div>
+      <div class="info-inner-visibility d-flex flex-row align-items-center">
+        <mat-icon svgIcon="visibility" style="height: 24px; width: 24px"></mat-icon>
+        {{visibilityValue}}
+      </div>
+    </div>
+  </div>
+</agm-overlay>

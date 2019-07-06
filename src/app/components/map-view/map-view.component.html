@@ -1,21 +1,43 @@
 <agm-map #AgmMap backgroundColor="#A6D3FC" [latitude]="lat" [longitude]="long" [streetViewControl]="false"
-    style="width: 100%; height: 100%" [zoom]="zoomLevel" [minZoom]="3" [maxZoom]="10"
-    (zoomChange)="onZoomChange($event)" (mapRightClick)="onRightClickMap($event)">
-    <div [ngSwitch]="isAreaFound">
-        <div *ngSwitchCase="false">
+    style="width: 100%; height: 100%" [zoom]="zoomLevel" [minZoom]="3" (zoomChange)="onZoomChange($event)"
+    (mapRightClick)="onRightClickMap($event)">
+    <div [ngSwitch]="foundCase">
+        <div *ngSwitchCase="'areaFound'">
+            <agm-marker-cluster
+                imagePath='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'>
+                <app-map-view-marker *ngFor="let item of areaStationsData" [latitude]="item.lat" [longitude]="item.long"
+                    [airportCode]="item.airportCode" [airportName]="item.airportName">
+                </app-map-view-marker>
+            </agm-marker-cluster>
+        </div>
+        <div *ngSwitchCase="'flightFound'">
+            <agm-marker-cluster
+                imagePath='https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'>
+                <app-map-flight-marker *ngFor="let item of flightForecastResults" [latitude]="item.lat"
+                    [longitude]="item.long" [airportCode]="item.airportCode" [airportName]="item.airportName"
+                    [svgIconSource]="item.svgIconSource" [visibilityValue]="item.visibilityValue"
+                    [windSpeedValue]="item.windSpeedValue" [transformValue]="item.transformValue">
+                </app-map-flight-marker>
+            </agm-marker-cluster>
+        </div>
+        <div *ngSwitchDefault>
             <app-map-view-marker *ngFor="let item of stationsData" [latitude]="item.lat" [longitude]="item.long"
                 [airportCode]="item.airportCode" [airportName]="item.airportName">
             </app-map-view-marker>
         </div>
-        <app-map-view-marker *ngFor="let item of areaStationsData" [latitude]="item.lat" [longitude]="item.long"
-            [airportCode]="item.airportCode" [airportName]="item.airportName">
-        </app-map-view-marker>
     </div>
-    <app-map-view-marker *ngFor="let item of flightResultData" [latitude]="item.lat" [longitude]="item.long"
-        [airportCode]="item.airportCode" [airportName]="item.airportName">
-    </app-map-view-marker>
     <agm-marker *ngFor="let item of circleBoundingPoints" [latitude]="item.lat" [longitude]="item.long">
     </agm-marker>
+    <app-map-flight-da-marker *ngIf="flightDepartureAvailable; else noFlightDeparture" [latitude]="flightDeparture.lat"
+        [longitude]="flightDeparture.long" [airportCode]="flightDeparture.airportCode"
+        [airportName]="flightDeparture.airportName" [markerColor]="'#337ab7'">
+    </app-map-flight-da-marker>
+    <ng-template #noFlightDeparture></ng-template>
+    <app-map-flight-da-marker *ngIf="flightArrivalAvailable; else noFlightArrival" [latitude]="flightArrival.lat"
+        [longitude]="flightArrival.long" [airportCode]="flightArrival.airportCode"
+        [airportName]="flightArrival.airportName" [markerColor]="'#d9534f'">
+    </app-map-flight-da-marker>
+    <ng-template #noFlightArrival></ng-template>
 </agm-map>
 <app-map-zoom-selector class="col-xl-3 bar-wrapper d-flex flex-column mr-2" (zoomMapEvent)="zoomMapEventHandler($event)"
     style="pointer-events: none"></app-map-zoom-selector>

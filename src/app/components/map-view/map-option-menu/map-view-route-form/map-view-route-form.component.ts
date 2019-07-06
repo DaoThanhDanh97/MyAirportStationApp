@@ -4,6 +4,7 @@ import { MapViewRouteFormInputComponent } from './map-view-route-form-input/map-
 import { MapOptionSelectService } from 'src/app/services/map-option-select.service';
 import { MapMarkerService } from 'src/app/services/map-marker.service';
 import { SearchLineDirective } from 'src/app/directives/search-line.directive';
+import { MapFlightRouteAdditionalService } from 'src/app/services/map-flight-route-additional.service';
 
 @Component({
   selector: 'app-map-view-route-form',
@@ -31,11 +32,16 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
 
   isSearchResultVisible: string = 'hidden';
 
+  initialBoundary: any;
+
+  resetBoundaryButtonDispMode: string;
+
   @ViewChildren(SearchLineDirective) searchLines: QueryList<SearchLineDirective>;
 
   constructor(private mapMetarStationsEvent: MapMetarStationsService,
     private mapOptionSelectService: MapOptionSelectService,
-    private mapMarkerService: MapMarkerService
+    private mapMarkerService: MapMarkerService,
+    private mapFlightRouteAdditionalService: MapFlightRouteAdditionalService
   ) {
     this.inputDepartureValue = '';
     this.inputDepartureDisplay = 'flex';
@@ -53,6 +59,8 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
 
     this.finalArrival = '';
     this.finalDeparture = '';
+
+    this.resetBoundaryButtonDispMode = 'none';
   }
 
   ngOnInit() {
@@ -73,7 +81,22 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log(this.searchLines);
+    this.mapFlightRouteAdditionalService.onMapBoundaryUpdate.subscribe((data: any) => {
+      console.log(data);
+      console.log(this.initialBoundary);
+      if(data.north != this.initialBoundary.north || data.south != this.initialBoundary.south 
+        || data.west != this.initialBoundary.west || data.east != this.initialBoundary.east) {
+          if(this.finalArrival != "" && this.finalDeparture != "") {
+            this.resetBoundaryButtonDispMode = 'flex';
+          }
+      }
+    })
+
+    this.mapFlightRouteAdditionalService.onFlightDataLoadComplete.subscribe((data: any) => {
+      console.log(data);
+      this.initialBoundary = data;
+      this.mapFlightRouteAdditionalService.onInitialRouteBoundaryReceived.emit();
+    })
   }
 
   onResultChange(data: any) {
@@ -102,7 +125,7 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
     this.onFlightButtonVisibleCheck();
   }
 
-  onResultDivClick(value: any) {
+  onResultDivClick(value: string) {
     if (value == 'departure') {
       this.finalDeparture = '';
       this.inputDepartureDisplay = 'flex';
@@ -120,6 +143,8 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
       setTimeout(() => this.searchLines.last.clickFocus(), 0);
     }
     this.onFlightButtonVisibleCheck();
+    this.resetBoundaryButtonDispMode = 'none';
+    this.mapFlightRouteAdditionalService.returnToDefaultMode.emit(value);
   }
 
   onChangeMode(value: string) {
@@ -152,5 +177,10 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
 
   onRouteFindAction() {
     this.mapMetarStationsEvent.onRouteFindAction(this.finalDeparture, this.finalArrival);
+  }
+
+  onResetMapViewClick() {
+    console.log('Clicked');
+    this.mapFlightRouteAdditionalService.resetBoundaryDataEvent.emit();
   }
 }

@@ -1,0 +1,14 @@
+.station_label {
+    color: #645edf; 
+    font-size: 15px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateX(-3px);
+    top: 1.5rem
+}
+
+.da-marker {
+    transform: scale(2) translateX(-1px);
+    transform-origin: 50% 100%;
+}
+

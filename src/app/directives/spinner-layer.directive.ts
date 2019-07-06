@@ -11,4 +11,8 @@ export class SpinnerLayerDirective {
   onLoadComplete() {
     this.displayValue = 'none';
   }
+
+  onLoadStart() {
+    this.displayValue = 'flex';
+  }
 }

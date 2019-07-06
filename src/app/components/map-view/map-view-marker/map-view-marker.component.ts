@@ -117,7 +117,7 @@ export class MapViewMarkerComponent implements OnInit {
 
   getSourceIcon(category: string) {
     switch(category) {
-      case "CLR": return "cloud_CLR";
+      case "SKC": return "cloud_CLR";
       case "FEW": return "cloud_FEW";
       case "SCT": return "cloud_SCT";
       case "BKN": return "cloud_BKN";

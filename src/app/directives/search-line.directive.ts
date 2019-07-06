@@ -11,8 +11,6 @@ export class SearchLineDirective {
   }
 
   @HostListener('document:click', ['$event']) onClick(event: any) {
-    console.log(this.elementRef.nativeElement.getAttribute('data-id'));
-
     if(this.elementRef.nativeElement.contains(event.target) == false) {
       this.inputService.onCloseTrigger(this.elementRef.nativeElement.getAttribute('data-id'))
     }

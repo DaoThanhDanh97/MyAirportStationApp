@@ -31,6 +31,8 @@ import { MapViewRouteFormInputComponent } from './components/map-view/map-option
 import { HttpClientModule } from '@angular/common/http';
 import { MapOptionAreaFindComponent } from './components/map-view/map-option-menu/map-option-area-find/map-option-area-find.component';
 import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
+import { MapFlightMarkerComponent } from './components/map-view/map-flight-marker/map-flight-marker.component';
+import { MapFlightDaMarkerComponent } from './components/map-view/map-flight-da-marker/map-flight-da-marker.component';
 
 const appRoute: Routes = [
   {
@@ -70,6 +72,8 @@ const appRoute: Routes = [
     MapViewRouteFormComponent,
     MapViewRouteFormInputComponent,
     MapOptionAreaFindComponent,
+    MapFlightMarkerComponent,
+    MapFlightDaMarkerComponent,
   ],
   imports: [
     BrowserModule,
