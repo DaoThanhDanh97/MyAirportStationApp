@@ -41,6 +41,7 @@
 </agm-map>
 <app-map-zoom-selector class="col-xl-3 bar-wrapper d-flex flex-column mr-2" (zoomMapEvent)="zoomMapEventHandler($event)"
     style="pointer-events: none"></app-map-zoom-selector>
+<app-map-station-metar-detail class="col-xl-5 mt-0 no_pointerEvent p-0" style="position: absolute; top: 0; left: 0; height: 100%"></app-map-station-metar-detail>
 <app-map-option-menu #appMapOptionMenu (changeModeEvent)="updateMode($event)" class="col-xl-5 mt-3 no_pointerEvent"
     style="position: absolute; top: 0; left: 0"></app-map-option-menu>
 <app-map-view-spinner appSpinnerLayer class="mapViewSpinner"></app-map-view-spinner>

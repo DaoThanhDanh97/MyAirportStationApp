@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
-import { MapOptionButtonComponent } from './map-option-button/map-option-button.component';
 import { MapViewSearchBarComponent } from './map-view-search-bar/map-view-search-bar.component';
 import { MapOptionSelectService } from 'src/app/services/map-option-select.service';
 import { MapOptionAreaFindComponent } from './map-option-area-find/map-option-area-find.component';

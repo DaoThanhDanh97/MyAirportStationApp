@@ -1,11 +1,10 @@
+import { DashboardService } from './../../services/dashboard.service';
 import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { AgmMap, LatLngLiteral, LatLngBounds, AgmCircle } from '@agm/core';
-import { MapStateBoundaryService } from '../../services/map-state-boundary.service'
+import { MapStateBoundaryService } from '../../services/map-state-boundary.service';
 import { MapMetarStationsService } from '../../services/map-metar-stations.service';
 import { StationDetail } from 'src/app/models/station_detail.model';
-import { MapStateInfoService } from '../../services/map-state-info.service'
-
-import * as stateCentersDetail from '../../JSON/state_center.json';
+import { MapStateInfoService } from '../../services/map-state-info.service';
 import { SpinnerLayerDirective } from 'src/app/directives/spinner-layer.directive';
 import { MapResetService } from 'src/app/services/map-reset.service';
 import { MapMarkerService } from 'src/app/services/map-marker.service';
@@ -86,7 +85,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private mapMarkerService: MapMarkerService,
     private mapOptionSelectService: MapOptionSelectService,
     private xmlJson: NgxXml2jsonService,
-    private mapFlightRouteAdditionalService: MapFlightRouteAdditionalService) {
+    private mapFlightRouteAdditionalService: MapFlightRouteAdditionalService,
+    private dashboardService: DashboardService) {
     this.circleLat = this.lat;
     this.circleLong = this.long;
     this.modeSelected = 'airport_find';
@@ -183,7 +183,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.mapFlightRouteAdditionalService.resetBoundaryDataEvent.subscribe(() => {
       console.log("Called");
-      if(this.foundCase == 'flightFound' && this.flightForecastResults != null) {
+      if (this.foundCase == 'flightFound' && this.flightForecastResults != null) {
         let latList = this.flightForecastResults.map(item => item.lat);
         let lngList = this.flightForecastResults.map(item => item.long);
 
@@ -196,20 +196,32 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     })
 
-    this.mapFlightRouteAdditionalService.onInitialRouteBoundaryReceived.subscribe(() => this.isInitialFlightBoundaryReceived = true); 
-  
+    this.mapFlightRouteAdditionalService.onInitialRouteBoundaryReceived.subscribe(() => this.isInitialFlightBoundaryReceived = true);
+
     this.mapFlightRouteAdditionalService.returnToDefaultMode.subscribe((data: any) => {
       this.foundCase = '';
       this.isPathFound = false;
       this.mapMetarStationsService.onBoundaryChange(this.mapView.getBounds().toJSON(), this.zoomLevel);
-      if(data == 'departure') {
+      if (data == 'departure') {
         this.flightDepartureAvailable = false;
         this.flightDeparture = null;
       }
-      if(data == 'arrival') {
+      if (data == 'arrival') {
         this.flightArrivalAvailable = false;
         this.flightArrival = null;
       }
+    })
+
+    this.mapMetarStationsService.flightMarkerEvent.subscribe((data: any) => {
+      if(data.type == 'flightSearchDeparture') {
+        this.flightDepartureAvailable = true;
+        this.flightDeparture = data.stationDetail;
+      }
+      if(data.type == 'flightSearchArrival') {
+        this.flightArrivalAvailable = true;
+        this.flightArrival = data.stationDetail;
+      }
+      this.stationsData = this.stationsData.filter(item => item.airportCode != data.stationDetail.airportCode);
     })
   }
 
@@ -324,8 +336,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.agmMap.boundsChange.subscribe((data: any) => {
       this.mapMetarStationsService.onBoundaryChange(data.toJSON(), this.zoomLevel);
-      
-      if(this.foundCase == 'flightFound' && this.isInitialFlightBoundaryReceived == true) {
+
+      if (this.foundCase == 'flightFound' && this.isInitialFlightBoundaryReceived == true) {
         this.mapFlightRouteAdditionalService.onMapBoundaryUpdate.emit(data.toJSON());
       }
     })
@@ -438,26 +450,26 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.flightArrivalAvailable = false;
     this.isInitialFlightBoundaryReceived = false;
 
-    if(this.flightLayer != null) {
+    if (this.flightLayer != null) {
       this.flightLayer.setMap(null);
     }
   }
 
   async callTafResults() {
     let tafResultList = new Array<any>();
-    for(let ind = 0; ind < this.flightResultData.length; ind++) {
+    for (let ind = 0; ind < this.flightResultData.length; ind++) {
       let tafStation = this.flightResultData[ind];
 
       let callTimeAction = await fetch('https://flighttime-calculator.com/calculate?lat1=' + this.flightDeparture.lat + '&lng1=' + this.flightDeparture.long + '&lat2=' + tafStation.lat + '&lng2=' + tafStation.long);
       let callTimeRes = await callTimeAction.json();
 
-      if(callTimeRes.flight_time != null) {
+      if (callTimeRes.flight_time != null) {
         let currentTime = new Date();
         let addedHours = parseInt(callTimeRes.flight_time.split(" ")[0].replace(/\D/g, ""));
         let addedMinutes = parseInt(callTimeRes.flight_time.split(" ")[1].replace(/\D/g, ""));
-        let currentTimeYst = new Date(currentTime.getUTCFullYear(), currentTime.getMonth(), currentTime.getDate() - 1, 
-        currentTime.getHours(), currentTime.getMinutes());
-        let arriveTime = new Date(currentTime.getUTCFullYear(), currentTime.getMonth(), currentTime.getDate(), 
+        let currentTimeYst = new Date(currentTime.getUTCFullYear(), currentTime.getMonth(), currentTime.getDate() - 1,
+          currentTime.getHours(), currentTime.getMinutes());
+        let arriveTime = new Date(currentTime.getUTCFullYear(), currentTime.getMonth(), currentTime.getDate(),
           currentTime.getHours() + addedHours, currentTime.getMinutes() + addedMinutes);
         let currentTimeYstISO = currentTimeYst.toISOString();
         let arriveTimeISO = arriveTime.toISOString();
@@ -465,22 +477,22 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
           + currentTimeYstISO + '&endTime=' + arriveTimeISO + '&stationString=' + tafStation.airportCode
         );
         let tafRes = await tafCall.text();
-        
+
         let parser = new DOMParser();
         let xml = parser.parseFromString(tafRes, 'text/xml');
 
         let tafResponse = new TafResponse(this.xmlJson.xmlToJson(xml)).getResponse();
-      
-        let tafResult = (Array.isArray(tafResponse.data.TAF))? tafResponse.data.TAF[0] : tafResponse.data.TAF;
 
-        if(tafResult != null) {
+        let tafResult = (Array.isArray(tafResponse.data.TAF)) ? tafResponse.data.TAF[0] : tafResponse.data.TAF;
+
+        if (tafResult != null) {
           let fcstResults = tafResult.forecast;
-          let possibleForecast = (Array.isArray(fcstResults))? fcstResults.find(item => (new Date(item.fcst_time_to).getTime() - arriveTime.getTime() > 0)) : fcstResults;
-          
+          let possibleForecast = (Array.isArray(fcstResults)) ? fcstResults.find(item => (new Date(item.fcst_time_to).getTime() - arriveTime.getTime() > 0)) : fcstResults;
+
           let fcstSkyCondition = <any>{};
 
-          if(possibleForecast.sky_condition != null) {
-            fcstSkyCondition = (Array.isArray(possibleForecast.sky_condition)? possibleForecast.sky_condition[0]["@attributes"] : possibleForecast.sky_condition["@attributes"]);
+          if (possibleForecast.sky_condition != null) {
+            fcstSkyCondition = (Array.isArray(possibleForecast.sky_condition) ? possibleForecast.sky_condition[0]["@attributes"] : possibleForecast.sky_condition["@attributes"]);
           }
           else {
             fcstSkyCondition = {
@@ -513,12 +525,15 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     )
 
     this.foundCase = 'flightFound';
-    this.mapView.fitBounds(flightBoundary);
-    this.mapFlightRouteAdditionalService.onFlightDataLoadComplete.emit(flightBoundary.toJSON());
+
+    setTimeout(() => {
+      this.mapView.fitBounds(flightBoundary);
+      this.mapFlightRouteAdditionalService.onFlightDataLoadComplete.emit(flightBoundary.toJSON());
+    }, 0);
   }
 
   getSourceIcon(category: string) {
-    switch(category) {
+    switch (category) {
       case "SKC": return "cloud_CLR";
       case "FEW": return "cloud_FEW";
       case "SCT": return "cloud_SCT";

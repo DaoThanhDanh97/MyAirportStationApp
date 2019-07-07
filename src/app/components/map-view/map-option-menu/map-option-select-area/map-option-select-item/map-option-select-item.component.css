@@ -1,0 +1,24 @@
+.selection-item {
+    background-color: white; 
+    width: 100%; 
+    pointer-events: visible;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #531776;
+}
+
+.selection-item-label {
+    font-size: 18px; 
+    font-family: 'Roboto';
+    cursor: pointer;
+}
+
+.selected-item {
+    background-color: #531776;
+    width: 100%;
+    pointer-events: visible;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    border-bottom: 1px solid #531776;
+}

@@ -1,5 +1,6 @@
+
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms'
 
 import { AppComponent } from './app.component';
@@ -15,6 +16,8 @@ import { StationSelectorDirective } from './directives/station-selector.directiv
 import { StationMarkerDirective } from './directives/station-marker.directive';
 import { MapViewSpinnerComponent } from './components/map-view/map-view-spinner/map-view-spinner.component';
 import { SpinnerLayerDirective } from './directives/spinner-layer.directive';
+
+
 import { MapViewSearchBarComponent } from './components/map-view/map-option-menu/map-view-search-bar/map-view-search-bar.component';
 import { SearchLineDirective } from './directives/search-line.directive';
 import { MapMetarStationsService } from './services/map-metar-stations.service';
@@ -25,7 +28,6 @@ import { GoogleChartsModule } from 'angular-google-charts';
 import { MapOptionMenuComponent } from './components/map-view/map-option-menu/map-option-menu.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule, MatCheckboxModule, MatIconModule, MatIconRegistry} from '@angular/material';
-import { MapOptionButtonComponent } from './components/map-view/map-option-menu/map-option-button/map-option-button.component';
 import { MapViewRouteFormComponent } from './components/map-view/map-option-menu/map-view-route-form/map-view-route-form.component';
 import { MapViewRouteFormInputComponent } from './components/map-view/map-option-menu/map-view-route-form/map-view-route-form-input/map-view-route-form-input.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -33,6 +35,15 @@ import { MapOptionAreaFindComponent } from './components/map-view/map-option-men
 import { AgmJsMarkerClustererModule } from '@agm/js-marker-clusterer';
 import { MapFlightMarkerComponent } from './components/map-view/map-flight-marker/map-flight-marker.component';
 import { MapFlightDaMarkerComponent } from './components/map-view/map-flight-da-marker/map-flight-da-marker.component';
+import { ModalComponent } from './components/map-view/modal-component/modal-component.component';
+import { AppDataModalComponent } from './components/app-data-modal/app-data-modal.component';
+import { TemperatureChartComponent } from './components/app-data-modal/temperature-chart/temperature-chart.component';
+import { AltimeterChartComponent } from './components/app-data-modal/altimeter-chart/altimeter-chart.component';
+import { DewpointChartComponent } from './components/app-data-modal/dewpoint-chart/dewpoint-chart.component';
+import { MapOptionSelectAreaComponent } from './components/map-view/map-option-menu/map-option-select-area/map-option-select-area.component';
+import { MapOptionSelectItemComponent } from './components/map-view/map-option-menu/map-option-select-area/map-option-select-item/map-option-select-item.component';
+import { MapStationMetarDetailComponent } from './components/map-view/map-station-metar-detail/map-station-metar-detail.component';
+
 
 const appRoute: Routes = [
   {
@@ -68,12 +79,21 @@ const appRoute: Routes = [
     SearchResultDirective,
     MapZoomSelectorComponent,
     MapOptionMenuComponent,
-    MapOptionButtonComponent,
     MapViewRouteFormComponent,
     MapViewRouteFormInputComponent,
     MapOptionAreaFindComponent,
     MapFlightMarkerComponent,
     MapFlightDaMarkerComponent,
+    ModalComponent,
+    AppDataModalComponent,
+    TemperatureChartComponent,
+    AltimeterChartComponent,
+    DewpointChartComponent,
+    MapOptionSelectAreaComponent,
+    MapOptionSelectItemComponent,
+    MapStationMetarDetailComponent,
+    
+  
   ],
   imports: [
     BrowserModule,

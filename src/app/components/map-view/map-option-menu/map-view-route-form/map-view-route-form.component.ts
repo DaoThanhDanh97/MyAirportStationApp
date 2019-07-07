@@ -123,6 +123,7 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
 
     this.mapMetarStationsEvent.getMoveDestination(item.airportCode);
     this.onFlightButtonVisibleCheck();
+    this.mapMetarStationsEvent.onFlightLocationSelection(item.airportCode, this.currentSearchLocation);
   }
 
   onResultDivClick(value: string) {

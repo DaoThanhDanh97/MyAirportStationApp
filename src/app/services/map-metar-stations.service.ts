@@ -30,6 +30,8 @@ export class MapMetarStationsService {
   constructor(private xmlJson: NgxXml2jsonService) {
   }
 
+  flightMarkerEvent = new EventEmitter<{ stationDetail: StationDetail, type: string }>();
+
   getStationsData() {
     mapMetarStations.default.map(item => {
       this.stations.push(new StationDetail(item.latitude, item.longitude, item.is_international, item.airportCode, item.major, item.stateName, item.stateAbbr, item.airportName));
@@ -144,5 +146,12 @@ export class MapMetarStationsService {
 
   getSingleStationData(station: string) {
     return this.stations.find(item => item.airportCode == station);
+  }
+
+  onFlightLocationSelection(station: string, type: string) {
+    this.flightMarkerEvent.emit({
+      stationDetail: this.stations.find(item => item.airportCode == station),
+      type: type
+    })
   }
 }
