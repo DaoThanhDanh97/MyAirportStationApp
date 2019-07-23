@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="70" height="70" viewBox="-35 -35 70 70" style="transform: translateY(-12px)">
-<desc>Cloud cover 8/8</desc>
-	<circle style="fill :#000000; stroke :#000000; stroke-width :3;" r="30" cx="0" cy="0" />
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="15pt" height="15pt" transform="translate(9,8)" viewBox="0 0 15 15" version="1.1">
+<g id="surface1">
+<path style="fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:4;" d="M 30.005208 0 C 30.005208 16.570312 16.570312 30.005208 0 30.005208 C -16.570312 30.005208 -30.005208 16.570312 -30.005208 0 C -30.005208 -16.570312 -16.570312 -30.005208 0 -30.005208 C 16.570312 -30.005208 30.005208 -16.570312 30.005208 0 Z M 30.005208 0 " transform="matrix(0.214286,0,0,0.214286,7.5,7.5)"/>
+</g>
 </svg>

@@ -1,0 +1,14 @@
+<h3 class="m-0 area-header">{{chartTitle}}</h3>
+<div [id]="divId" style="height: 250px; width: 100%"></div>
+<div [ngSwitch]="isEnd">
+  <hr *ngSwitchDefault class="underline-hr">
+  <div *ngSwitchCase="true" style="margin-top: 16px"></div>
+</div>
+<div [ngSwitch]="divId">
+  <div *ngSwitchDefault></div>
+  <div *ngSwitchCase="'wind-cond-chart-id'">
+    <div appMetar24hWindDegree *ngFor="let item of rotationArray" class="overlay-marker" [ngStyle]="{'transform': 'rotate(' + item + 'deg)'}">
+      <img style="width: 25px; height: 25px" src="assets/marker.png" alt="Rotation Marker">
+    </div>
+  </div>
+</div>

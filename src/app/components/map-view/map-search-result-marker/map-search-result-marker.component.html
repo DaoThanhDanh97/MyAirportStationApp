@@ -1,0 +1,43 @@
+<agm-overlay [latitude]="searchResult.latitude" [longitude]="searchResult.longitude">
+  <div class="info-div">
+    <mat-icon [svgIcon]="searchResult.svgIconSource"></mat-icon>
+    <div class="info-outer">
+      <div class="info-cloud-ft">
+        {{searchResult.cloudFtValue}}
+      </div>
+      <div class="info-wind">
+        <div class="mr-2 d-flex align-items-center justify-content-center"
+          [ngStyle]="{'transform': searchResult.transformValue}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14">
+            <circle cx="7" cy="7" r="7" stroke="" fill="black" />
+            <line x1="7" y1="7" x2="7" y2="1" style="stroke: white" />
+          </svg>
+        </div>
+        {{searchResult.windSpeedValue}}
+      </div>
+      <div class="info-visibility">
+        <mat-icon svgIcon="visibility"></mat-icon>
+        {{searchResult.visibilityValue}}
+      </div>
+      <div class="info-altimeter">
+        <mat-icon svgIcon="altimeter"></mat-icon>
+        {{searchResult.altimeterValue}}
+      </div>
+      <div class="info-temperature">
+        <div>
+          <mat-icon svgIcon="temperature_celsius"></mat-icon>
+        </div>
+        {{searchResult.temperatureValue}}
+      </div>
+      <div class="info-dewPoint">
+        <div>
+          <mat-icon svgIcon="drop"></mat-icon>
+        </div>
+        {{searchResult.dewPointValue}}
+      </div>
+      <div class="info-station" [ngStyle]="{'color': searchResult.flightCategoryColor}">
+        {{searchResult.airportCode}} - {{searchResult.observationValue}}
+      </div>
+    </div>
+  </div>
+</agm-overlay>

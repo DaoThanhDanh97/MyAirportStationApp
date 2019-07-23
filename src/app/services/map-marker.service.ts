@@ -17,6 +17,9 @@ export class MapMarkerService {
 
   flightMarkerLoadComplete = new EventEmitter<any>();
 
+  searchByClickEvent = new EventEmitter<any>();
+  removeSearchResultEvent = new EventEmitter<void>();
+
   constructor() { }
 
   onClickEvent(data: any) {

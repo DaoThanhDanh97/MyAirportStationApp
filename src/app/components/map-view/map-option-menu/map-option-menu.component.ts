@@ -6,7 +6,7 @@ import { MapOptionAreaFindComponent } from './map-option-area-find/map-option-ar
 @Component({
   selector: 'app-map-option-menu',
   templateUrl: './map-option-menu.component.html',
-  styleUrls: ['./map-option-menu.component.css']
+  styleUrls: ['./map-option-menu.component.css'],
 })
 export class MapOptionMenuComponent implements OnInit {
   selectedOption: string;

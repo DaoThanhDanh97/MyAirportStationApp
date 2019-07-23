@@ -26,7 +26,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translateX(-50%) translateY(-50%) translateY(9px);
+    transform: translateX(-50%) translateY(-50%);
 }
 
 .info-div-inner {
@@ -39,11 +39,10 @@
 
 .info-inner-station {
     position: absolute;
-    top: 85px;
+    top: 30px;
     left: 50%;
-    transform: translateX(-50%);
     font-size: 14px;
-    white-space: nowrap;
+    transform: translateX(-50%) translateX(3px);
 }
 
 .info-inner-observeTime {
@@ -65,15 +64,17 @@
 
 .info-inner-windMarker {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%) translate(35px, 35px);  
+    top: 13px;
+    left: 30px;
+    white-space: nowrap;
+    font-size: 14px;
 }
 
 .info-inner-windMarkerInner {
     fill: none;
     stroke:black;
     stroke-width: 3;
+    white-space: nowrap;
 }
 
 .info-inner-temperature {
@@ -87,10 +88,10 @@
 
 .info-inner-visibility {
     position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100%);
+    top: 12px;
+    left: -20px;
     font-size: 14px;
+    transform: translateX(-100%);
     white-space: nowrap;
 }
 
@@ -101,4 +102,8 @@
     transform: translateX(-50%) translateY(-50%) translateX(-70px);
     font-size: 14px;
     white-space: nowrap;
+}
+
+.wind-icon-scale {
+    transform: scale(1.5) !important;
 }

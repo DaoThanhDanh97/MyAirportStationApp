@@ -46,7 +46,7 @@ export class MapMetarStationsService {
         this.stationsEvent.emit(this.stations.filter(item => item.isMajor == true));
       }
       else if (zoomLevel < 10) {
-        this.stationsEvent.emit(this.stations.filter(item => item.isInternational == true));
+        this.stationsEvent.emit(this.stations.filter(item => item.isInternational == true && (boundary.south < item.lat && boundary.north > item.lat && boundary.west < item.long && boundary.east > item.long) == true));
       }
       else {
         this.stationsEvent.emit(this.stations.filter(item => (boundary.south < item.lat && boundary.north > item.lat && boundary.west < item.long && boundary.east > item.long)));

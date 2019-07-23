@@ -13841,7 +13841,7 @@
     "airportCode": "KDEN",
     "airportName": "DENVER INTL",
     "countryCode": "USA",
-    "is_international": false,
+    "is_international": true,
     "major": true,
     "countryName": "United States of America",
     "stateName": "Colorado",

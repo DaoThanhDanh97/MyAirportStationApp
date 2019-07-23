@@ -1,43 +1,45 @@
-<div class="col-xl-12 d-flex flex-row pr-0 pl-0">
-  <div class="col-8 pb-2 pt-2 pr-0 pl-0" style="background-color: white; pointer-events: visible">
-    <div>
-      <div class="flex-row pl-4 align-items-center" [ngStyle]="{'display': inputDepartureDisplay}">
-        <mat-icon style="color: #337ab7">location_on</mat-icon>
-        <input [(ngModel)]="inputDepartureValue" type="text" class="form-control input-bar"
-          placeholder="Input Station Name Here..." [attr.data-id]="'flightSearchDeparture'" appSearchLine>
-      </div>
-      <div class="pl-4 form-control input-bar align-items-center" [ngStyle]="{'display': resultDepartureDisplay}"
-        (click)="onResultDivClick('departure')">
-        <mat-icon style="color: #337ab7">location_on</mat-icon>
-        <span style="padding-left: 0.75rem">{{departureValue}}</span>
-      </div>
-      <div class="mt-2 mb-2"></div>
-      <div class="flex-row pl-4 align-items-center" [ngStyle]="{'display': inputArrivalDisplay}">
-        <mat-icon style="color: #d9534f">location_on</mat-icon>
-        <input [(ngModel)]="inputArrivalValue" type="text" class="form-control input-bar"
-          placeholder="Input Station Name Here..." [attr.data-id]="'flightSearchArrival'" appSearchLine>
-      </div>
-      <div class="pl-4 form-control input-bar align-items-center" [ngStyle]="{'display': resultArrivalDisplay}"
-        (click)="onResultDivClick('arrival')">
-        <mat-icon style="color: #d9534f">location_on</mat-icon>
-        <span style="padding-left: 0.75rem">{{arrivalValue}}</span>
+<div class="col-xl-9 d-flex flex-row">
+  <div class="col d-flex flex-row pl-0 pr-0 input-shadow">
+    <div class="col-11 pb-2 pt-2 pr-0 pl-0" style="background-color: white; pointer-events: visible">
+      <div>
+        <div class="flex-row pl-4 align-items-center" [ngStyle]="{'display': inputDepartureDisplay}">
+          <mat-icon style="color: #337ab7">location_on</mat-icon>
+          <input [(ngModel)]="inputDepartureValue" type="text" class="form-control input-bar"
+            placeholder="Input Station Name Here..." [attr.data-id]="'flightSearchDeparture'" appSearchLine>
+        </div>
+        <div class="pl-4 form-control input-bar align-items-center" [ngStyle]="{'display': resultDepartureDisplay}"
+          (click)="onResultDivClick('departure')">
+          <mat-icon style="color: #337ab7">location_on</mat-icon>
+          <span style="padding-left: 0.75rem">{{departureValue}}</span>
+        </div>
+        <div class="mt-2 mb-2"></div>
+        <div class="flex-row pl-4 align-items-center" [ngStyle]="{'display': inputArrivalDisplay}">
+          <mat-icon style="color: #d9534f">location_on</mat-icon>
+          <input [(ngModel)]="inputArrivalValue" type="text" class="form-control input-bar"
+            placeholder="Input Station Name Here..." [attr.data-id]="'flightSearchArrival'" appSearchLine>
+        </div>
+        <div class="pl-4 form-control input-bar align-items-center" [ngStyle]="{'display': resultArrivalDisplay}"
+          (click)="onResultDivClick('arrival')">
+          <mat-icon style="color: #d9534f">location_on</mat-icon>
+          <span style="padding-left: 0.75rem">{{arrivalValue}}</span>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="col-1 d-flex flex-row justify-content-center align-items-center pl-0 pr-0 pb-2 pt-2"
-    style="background: white; pointer-events: visible">
-    <div class="col d-flex align-items-center justify-content-center"
-      style="height: 100%">
-      <div>
-        <button class="btn-circle d-flex" [ngStyle]="{'visibility': isSearchResultVisible}" (click)="onRouteFindAction()">
-          <mat-icon aria-label="Example icon-button with a heart icon">flight_takeoff</mat-icon>
-        </button>
+    <div class="col-1 d-flex flex-row justify-content-center align-items-center pl-0 pr-0 pb-2 pt-2"
+      style="background: white; pointer-events: visible">
+      <div class="col d-flex align-items-center justify-content-center" style="height: 100%">
+        <div>
+          <button class="btn-circle d-flex map-option-button" [ngStyle]="{'visibility': isSearchResultVisible}"
+            (click)="onRouteFindAction()" [ngClass]="{'route-button-clicked': isRouteButtonClicked}">
+            <mat-icon aria-label="Example icon-button with a heart icon">flight_takeoff</mat-icon>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
-<div class="col-xl-12 pr-0 pl-0" [ngStyle]="{'display': resultListDisplay}">
-  <div class="col-8 p-0" style="background-color: white; pointer-events: visible; border-top: 1px solid #d3d3d3">
+<div class="col-xl-9" [ngStyle]="{'display': resultListDisplay}">
+  <div class="col p-0" style="background-color: white; pointer-events: visible; border-top: 1px solid #d3d3d3">
     <label class="col-form-label suggestion-label">Suggestion</label>
     <ul class="list-group" style="overflow-y: auto; max-height: 200px">
       <li *ngFor="let item of result" class="list-group-item pt-0 pb-0" (click)="onItemClick(item)">
@@ -48,4 +50,5 @@
     </ul>
   </div>
 </div>
-<button class="btn btn-primary mt-2 click-visible" [ngStyle]="{'display': resetBoundaryButtonDispMode}" (click)="onResetMapViewClick()">Reset Map View</button>
+<button class="btn btn-primary mt-2 click-visible reset-map-button" [ngStyle]="{'display': resetBoundaryButtonDispMode}"
+  (click)="onResetMapViewClick()">Reset Map View</button>

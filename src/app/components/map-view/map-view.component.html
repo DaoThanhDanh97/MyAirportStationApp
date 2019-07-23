@@ -1,6 +1,10 @@
 <agm-map #AgmMap backgroundColor="#A6D3FC" [latitude]="lat" [longitude]="long" [streetViewControl]="false"
     style="width: 100%; height: 100%" [zoom]="zoomLevel" [minZoom]="3" (zoomChange)="onZoomChange($event)"
     (mapRightClick)="onRightClickMap($event)">
+    <app-map-search-result-marker
+        [ngStyle]="{'display': searchResultDisplay}"
+        [searchResult]="searchResult"
+    ></app-map-search-result-marker>
     <div [ngSwitch]="foundCase">
         <div *ngSwitchCase="'areaFound'">
             <agm-marker-cluster
@@ -41,7 +45,7 @@
 </agm-map>
 <app-map-zoom-selector class="col-xl-3 bar-wrapper d-flex flex-column mr-2" (zoomMapEvent)="zoomMapEventHandler($event)"
     style="pointer-events: none"></app-map-zoom-selector>
-<app-map-station-metar-detail class="col-xl-5 mt-0 no_pointerEvent p-0" style="position: absolute; top: 0; left: 0; height: 100%"></app-map-station-metar-detail>
-<app-map-option-menu #appMapOptionMenu (changeModeEvent)="updateMode($event)" class="col-xl-5 mt-3 no_pointerEvent"
+<app-map-station-metar-detail [marginTopValue]="metarDetailDivMarginTop" [@appearHidden]="metarReportDivStatus" class="col-xl-5 mt-0 p-0 no_pointerEvent" style="position: absolute; top: 0; left: 0; height: 100%"></app-map-station-metar-detail>
+<app-map-option-menu #appMapOptionMenu appOptionMenu (changeModeEvent)="updateMode($event)" class="col-xl-5 mt-3 p-0 no_pointerEvent"
     style="position: absolute; top: 0; left: 0"></app-map-option-menu>
 <app-map-view-spinner appSpinnerLayer class="mapViewSpinner"></app-map-view-spinner>

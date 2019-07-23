@@ -5,6 +5,7 @@ import { MapOptionSelectService } from 'src/app/services/map-option-select.servi
 import { MapMarkerService } from 'src/app/services/map-marker.service';
 import { SearchLineDirective } from 'src/app/directives/search-line.directive';
 import { MapFlightRouteAdditionalService } from 'src/app/services/map-flight-route-additional.service';
+import { NgxXml2jsonService } from 'ngx-xml2json';
 
 @Component({
   selector: 'app-map-view-route-form',
@@ -36,12 +37,15 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
 
   resetBoundaryButtonDispMode: string;
 
+  isRouteButtonClicked: boolean = false;
+
   @ViewChildren(SearchLineDirective) searchLines: QueryList<SearchLineDirective>;
 
   constructor(private mapMetarStationsEvent: MapMetarStationsService,
     private mapOptionSelectService: MapOptionSelectService,
     private mapMarkerService: MapMarkerService,
-    private mapFlightRouteAdditionalService: MapFlightRouteAdditionalService
+    private mapFlightRouteAdditionalService: MapFlightRouteAdditionalService,
+    private xmlJson: NgxXml2jsonService
   ) {
     this.inputDepartureValue = '';
     this.inputDepartureDisplay = 'flex';
@@ -71,7 +75,7 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
 
     this.mapMarkerService.doubleClickEvent.subscribe((value: any) => {
       console.log('Received');
-      if(this.currentSearchLocation == '') {
+      if (this.currentSearchLocation == '') {
         this.onMarkerClick(value);
       } else {
         this.onItemClick(value);
@@ -84,11 +88,11 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
     this.mapFlightRouteAdditionalService.onMapBoundaryUpdate.subscribe((data: any) => {
       console.log(data);
       console.log(this.initialBoundary);
-      if(data.north != this.initialBoundary.north || data.south != this.initialBoundary.south 
+      if (data.north != this.initialBoundary.north || data.south != this.initialBoundary.south
         || data.west != this.initialBoundary.west || data.east != this.initialBoundary.east) {
-          if(this.finalArrival != "" && this.finalDeparture != "") {
-            this.resetBoundaryButtonDispMode = 'flex';
-          }
+        if (this.finalArrival != "" && this.finalDeparture != "") {
+          this.resetBoundaryButtonDispMode = 'flex';
+        }
       }
     })
 
@@ -145,6 +149,7 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
     }
     this.onFlightButtonVisibleCheck();
     this.resetBoundaryButtonDispMode = 'none';
+    this.isRouteButtonClicked = false;
     this.mapFlightRouteAdditionalService.returnToDefaultMode.emit(value);
   }
 
@@ -153,12 +158,12 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
   }
 
   onMarkerClick(item: any) {
-    if(this.finalDeparture == '') {
+    if (this.finalDeparture == '') {
       this.finalDeparture = item.airportCode;
       this.inputDepartureDisplay = 'none';
       this.resultDepartureDisplay = 'flex';
       this.inputDepartureValue = '';
-      this.departureValue = item.airportName + " (" + item.airportCode + ")";      
+      this.departureValue = item.airportName + " (" + item.airportCode + ")";
     }
     else if (this.finalArrival == '') {
       this.finalArrival = item.airportCode;
@@ -173,15 +178,99 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
   }
 
   onFlightButtonVisibleCheck() {
-    this.isSearchResultVisible = (this.finalArrival != '' && this.finalDeparture != '')? 'visible' : 'hidden';
+    this.isSearchResultVisible = (this.finalArrival != '' && this.finalDeparture != '') ? 'visible' : 'hidden';
   }
 
   onRouteFindAction() {
-    this.mapMetarStationsEvent.onRouteFindAction(this.finalDeparture, this.finalArrival);
+    if (this.isRouteButtonClicked == false) {
+      this.airSigmetDataSearch();
+      this.isRouteButtonClicked = true;
+      this.mapMetarStationsEvent.onRouteFindAction(this.finalDeparture, this.finalArrival);
+    }
   }
 
   onResetMapViewClick() {
-    console.log('Clicked');
     this.mapFlightRouteAdditionalService.resetBoundaryDataEvent.emit();
+  }
+
+  async airSigmetDataSearch() {
+    let startPoint = this.mapMetarStationsEvent.getSingleStationData(this.finalDeparture);
+    let endPoint = this.mapMetarStationsEvent.getSingleStationData(this.finalArrival);
+    let callTime = await fetch('https://flighttime-calculator.com/calculate?lat1=' + startPoint.lat + '&lng1=' + startPoint.long + '&lat2=' + endPoint.lat + '&lng2=' + endPoint.long);
+    let callRes = await callTime.json();
+    if (callRes.flight_time != null) {
+      let currentTime = new Date();
+      let addedHours = parseInt(callRes.flight_time.split(" ")[0].replace(/\D/g, ""));
+      let addedMinutes = parseInt(callRes.flight_time.split(" ")[1].replace(/\D/g, ""));
+      let arriveTime = new Date(currentTime.getUTCFullYear(), currentTime.getMonth(), currentTime.getDate(),
+        currentTime.getHours() + addedHours, currentTime.getMinutes() + addedMinutes);
+      let currentTimeISO = currentTime.toISOString();
+      let arriveTimeISO = arriveTime.toISOString();
+      let airSigmetCall = await fetch('https://bcaws.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=airsigmets&requestType=retrieve&format=xml&startTime=' + currentTimeISO + '&endTime=' + arriveTimeISO);
+      let airSigmetRes = await airSigmetCall.text();
+      let parser = new DOMParser();
+      let xml = parser.parseFromString(airSigmetRes, 'text/xml');
+      let jsonResponse = <any>{};
+      jsonResponse = this.xmlJson.xmlToJson(xml);
+      let airSigmetDatas = jsonResponse.response.data.AIRSIGMET;
+      let maxLat = Math.max(...[startPoint.lat, endPoint.lat]);
+      let minLat = Math.min(...[startPoint.lat, endPoint.lat]);
+      let maxLong = Math.max(...[startPoint.long, endPoint.long]);
+      let minLong = Math.min(...[startPoint.long, endPoint.long]);
+      //console.log(airSigmetDatas);
+      if (Array.isArray(airSigmetDatas)) {
+        let filteredResult = airSigmetDatas.filter((item) => {
+          return (this.checkPointArrayExistInArea(item.area.point, maxLat, minLat, maxLong, minLong) == true)
+        })
+        console.log(filteredResult);
+        filteredResult = filteredResult.map(item => {
+          return {
+            type: this.setColorBasedOnAirSigmetType(item.airsigmet_type),
+            pointArray: item.area.point.map(subItem => {
+              return {
+                lat: parseFloat(subItem.latitude),
+                lng: parseFloat(subItem.longitude)
+              }
+            })
+          }
+        });
+        //return filteredResult;
+        this.mapFlightRouteAdditionalService.airSigmetArrayEvent.emit(filteredResult);
+        return;
+      }
+      else if (airSigmetDatas != null) {
+        if (this.checkPointArrayExistInArea(airSigmetDatas.area.point, maxLat, minLat, maxLong, minLong) == true) {
+          let returnedArray = airSigmetDatas.area.point.map(item => {
+            return {
+              lat: parseFloat(item.latitude),
+              lng: parseFloat(item.longitude)
+            }
+          })
+          let returnedResult = {
+            type: this.setColorBasedOnAirSigmetType(airSigmetDatas.airsigmet_type),
+            pointArray: returnedArray
+          }
+          this.mapFlightRouteAdditionalService.airSigmetArrayEvent.emit([returnedResult]);
+          return;
+        }
+        else this.mapFlightRouteAdditionalService.airSigmetArrayEvent.emit([]);
+      }
+      else this.mapFlightRouteAdditionalService.airSigmetArrayEvent.emit([]);
+    }
+  }
+
+  checkPointArrayExistInArea(data: Array<any>, maxLat: number, minLat: number, maxLong: number, minLong: number) {
+    return (data.find((item) => {
+      return (item.latitude >= minLat && item.latitude <= maxLat && item.longitude >= minLong && item.longitude <= maxLong);
+    }) != null)
+  }
+
+  setColorBasedOnAirSigmetType(type: string) {
+    switch (type) {
+      case "SIGMET": return "#ff3b3b";
+      case "AIRMET": return "#ffff75";
+      case "OUTLOOK": return "#ffca75";
+      default: return "#a3a3a3"
+    }
   }
 }

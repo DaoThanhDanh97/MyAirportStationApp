@@ -37,7 +37,7 @@ export class MapViewMarkerComponent implements OnInit {
   flightCategory: string = "";
   observationValue: string = "";
 
-  transformValue: string = "translate(35px, 35px)";
+  transformValue: string = "";
 
   constructor(private xmlJson: NgxXml2jsonService, private mapMarkerService: MapMarkerService) {
     this.isOpen = false;
@@ -45,14 +45,7 @@ export class MapViewMarkerComponent implements OnInit {
 
   ngOnInit() {
     this.mapMarkerService.clickEvent.subscribe((data: any) => {
-      if(this.airportCode != data.airportCode || this.isOpen == true) {
-        //this.isOpen = false;
-        this.infoDisplayValue = "none";
-        this.markerDisplayValue = "flex";
-        return;
-      }
-      else {
-        //this.isOpen = true;
+      if(data.airportCode == this.airportCode) {
         this.onInitCall();
       }
     })
@@ -77,7 +70,7 @@ export class MapViewMarkerComponent implements OnInit {
           console.log(firstResult);
           this.temperatureValue = parseFloat(firstResult.temp_c);
           this.windDegreeValue = parseInt(firstResult.wind_dir_degrees);
-          this.windSpeedValue = firstResult.wind_speed_kt + " kt";
+          this.windSpeedValue = firstResult.wind_speed_kt;
           this.visibilityValue = firstResult.visibility_statute_mi;
           this.altimeterValue = parseFloat(parseFloat(firstResult.altim_in_hg).toFixed(2));
           this.dewPointValue = firstResult.dewpoint_c;
@@ -96,14 +89,42 @@ export class MapViewMarkerComponent implements OnInit {
           this.flightCategoryColor = this.setFlightCategoryColor(firstResult.flight_category);
           this.svgIconSource = this.getSourceIcon(this.cloudCoverValue);
           this.transformValue = this.getTransformValue(this.windDegreeValue);
-          this.isDataLoaded = true;
-          this.infoDisplayValue = "flex";
+          //this.isDataLoaded = true;
+          this.mapMarkerService.searchByClickEvent.emit({
+            latitude: this.latitude,
+            longitude: this.longitude,
+            airportCode: this.airportCode,
+            temperatureValue: this.temperatureValue,
+            windDegreeValue: this.windDegreeValue,
+            windSpeedValue: this.windSpeedValue,
+            visibilityValue: this.visibilityValue,
+            altimeterValue: this.altimeterValue,
+            dewPointValue: this.dewPointValue,
+            cloudCoverValue: this.cloudCoverValue,
+            cloudFtValue: this.cloudFtValue,
+            flightCategory: this.flightCategory,
+            observationValue: this.observationValue,
+            transformValue: this.transformValue + " scale(1.5)",
+            flightCategoryColor: this.flightCategoryColor,
+            svgIconSource: this.svgIconSource
+          })
           this.markerDisplayValue = "none";
         }
         else {
           this.isDataLoaded = false;
         }
       })
+  }
+
+  onStationSelected(station: string) {
+    if(this.airportCode == station) {
+      this.onInitCall();
+    }
+  }
+
+  resetMarker() {
+    this.infoDisplayValue = 'none';
+    this.markerDisplayValue = 'flex';
   }
 
   setFlightCategoryColor(category: string) {
@@ -122,7 +143,7 @@ export class MapViewMarkerComponent implements OnInit {
       case "SCT": return "cloud_SCT";
       case "BKN": return "cloud_BKN";
       case "OVC": return "cloud_OVC";
-      default: return "";
+      default: return "cloud_DFT";
     }
   }
 
@@ -130,12 +151,15 @@ export class MapViewMarkerComponent implements OnInit {
     let symbolValue = (dateValue.getTimezoneOffset()/60 <= 0)? "+" : "-";
     let hoursValue = (dateValue.getHours() < 10)? ("0" + dateValue.getHours()) : dateValue.getHours();
     let minutesValue = (dateValue.getMinutes() < 10)? ("0" + dateValue.getMinutes()) : dateValue.getMinutes();
-    let secondsValue = (dateValue.getSeconds() < 10)? ("0" + dateValue.getSeconds()) : dateValue.getSeconds();
-    return hoursValue + ":" + minutesValue + ":" + secondsValue + " GMT"
+    return hoursValue + ":" + minutesValue + ":" + " GMT"
       + symbolValue + Math.abs(dateValue.getTimezoneOffset()/60);
   }
 
   getTransformValue(value: number) {
-    return "translate(35px, 35px) " + "rotate(" + value + "deg)"
+    return "rotate(" + value + "deg)"
+  }
+
+  onMarkerSelectionUpdate(value: string) {
+    this.markerDisplayValue = (this.airportCode == value)? "none" : "flex";
   }
 }

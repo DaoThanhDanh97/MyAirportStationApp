@@ -61,3 +61,12 @@ ul li:nth-last-child(1) div {
 .click-visible {
     pointer-events: visible;
 }
+
+.reset-map-button {
+    margin-left: 15px;
+}
+
+.route-button-clicked {
+    background: #007bff;
+    color: white;
+}

@@ -1,5 +1,5 @@
 import { DashboardService } from './../../services/dashboard.service';
-import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, OnDestroy, ViewChildren, QueryList } from '@angular/core';
 import { AgmMap, LatLngLiteral, LatLngBounds, AgmCircle } from '@agm/core';
 import { MapStateBoundaryService } from '../../services/map-state-boundary.service';
 import { MapMetarStationsService } from '../../services/map-metar-stations.service';
@@ -13,6 +13,10 @@ import { MapOptionSelectService } from 'src/app/services/map-option-select.servi
 import { NgxXml2jsonService } from 'ngx-xml2json';
 import { TafResponse } from 'src/app/models/taf-response.model';
 import { MapFlightRouteAdditionalService } from 'src/app/services/map-flight-route-additional.service';
+import { trigger, state, style, animate, transition } from '@angular/animations';
+import { Data24hService } from 'src/app/services/data-24h.service';
+import { OptionMenuDirective } from 'src/app/directives/option-menu.directive';
+import { MapViewMarkerComponent } from './map-view-marker/map-view-marker.component';
 
 const earthRadius: number = 6371000;
 
@@ -20,12 +24,25 @@ const earthRadius: number = 6371000;
   selector: 'app-map-view',
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.css'],
-  providers: [MapStateBoundaryService, MapStateInfoService, MapResetService, MapMarkerService, MapOptionSelectService, MapFlightRouteAdditionalService]
+  providers: [MapStateBoundaryService, MapStateInfoService, MapResetService, MapMarkerService, MapOptionSelectService, MapFlightRouteAdditionalService, Data24hService],
+  animations: [
+    trigger('appearHidden', [
+      state('appear', style({
+        transform: 'translateX(0)'
+      })),
+      state('hidden', style({
+        transform: 'translateX(-100%)'
+      })),
+      transition('hidden => appear', [animate('0.2s ease-in')]),
+      transition('appear => hidden', [animate('0.3s ease-out')])
+    ])
+  ]
 })
 export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
   zoomLevel: number = 5;
   lat: number = 39.8097343;
   long: number = -98.5556199;
+  metarReportDivStatus: string = 'hidden';
 
   //features: any;
 
@@ -48,7 +65,6 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
   circleLat: number;
   circleLong: number;
 
-  selectedState: any;
   mapView: any;
   data_layer: any;
   data_layer2: any;
@@ -60,10 +76,24 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
   state_JSON: string = 'https://firebasestorage.googleapis.com/v0/b/mydbjson.appspot.com/o/us_state.json?alt=media&token=f4135f44-430a-41c6-8e64-5e3e45d73954';
   county_JSON: string = 'https://firebasestorage.googleapis.com/v0/b/mydbjson.appspot.com/o/us_county_geojson.json?alt=media&token=0405f96b-3dcb-4ae2-81b3-1a1f8d85c7a1';
 
+  metarDetailDivMarginTop: string = '0px';
+
+  isMarkerSelected: boolean = false;
+  selectedStation: string = '';
+
+  isResetted: boolean = false;
+
+  searchResultDisplay: string = "none";
+  searchResult: any;
+  markerList: any;
+
   @ViewChild('AgmMap') agmMap: AgmMap;
   @ViewChild(SpinnerLayerDirective) spinnerLayer: SpinnerLayerDirective;
   @ViewChild('agmCircle', { read: AgmCircle }) agmCircle: AgmCircle;
-  @ViewChild('appMapOptionMenu') mapOptionMenuComponent: MapOptionMenuComponent
+  @ViewChild('appMapOptionMenu') mapOptionMenuComponent: MapOptionMenuComponent;
+  @ViewChild(OptionMenuDirective) mapOptionMenuDirective: OptionMenuDirective;
+
+  @ViewChildren(MapViewMarkerComponent) mapMarkerComponents: QueryList<MapViewMarkerComponent>;
 
   //airport mode
   modeSelected: string = '';
@@ -78,6 +108,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
   flightForecastResults: Array<any> = [];
   isInitialFlightBoundaryReceived: boolean = false;
 
+  airSigmetArray: Array<any> = [];
+
   constructor(private mapStateBoundaryService: MapStateBoundaryService,
     private mapMetarStationsService: MapMetarStationsService,
     private mapStateInfoService: MapStateInfoService,
@@ -86,10 +118,28 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     private mapOptionSelectService: MapOptionSelectService,
     private xmlJson: NgxXml2jsonService,
     private mapFlightRouteAdditionalService: MapFlightRouteAdditionalService,
-    private dashboardService: DashboardService) {
+    private data24hService: Data24hService) {
     this.circleLat = this.lat;
     this.circleLong = this.long;
     this.modeSelected = 'airport_find';
+    this.searchResult = {
+      latitude: 0,
+      longitude: 0,
+      airportCode: "",
+      temperatureValue: 0,
+      windDegreeValue: 0,
+      windSpeedValue: "",
+      visibilityValue: "",
+      altimeterValue: 0,
+      dewPointValue: 0,
+      cloudCoverValue: "",
+      cloudFtValue: "",
+      flightCategory: "",
+      observationValue: "",
+      transformValue: "",
+      flightCategoryColor: "",
+      svgIconSource: ""
+    }
   }
 
   ngOnInit() {
@@ -112,6 +162,26 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.stationsData = [];
         this.areaStationsData = [];
       }
+      //console.log(this.isMarkerSelected);
+      if (this.isMarkerSelected) {
+        this.mapMarkerComponents.toArray().forEach((component) => {
+          component.onStationSelected(this.selectedStation);
+        })
+        this.isMarkerSelected = false;
+      }
+
+      //reset all markers
+      if (this.isResetted) {
+        this.mapMarkerComponents.toArray().forEach((component) => {
+          component.resetMarker();
+        })
+      }
+
+      if (this.searchResultDisplay != 'none') {
+        this.mapMarkerComponents.toArray().forEach((component) => {
+          component.onMarkerSelectionUpdate(this.searchResult.airportCode);
+        })
+      }
     });
 
     this.mapStateInfoService.stateData.subscribe((data: any) => {
@@ -124,9 +194,11 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     })
 
     this.mapMetarStationsService.getStationToMoveEvent.subscribe((data: any) => {
-      //console.log(data);
       this.zoomLevel = 10;
-
+      if (this.modeSelected == 'airport_find') {
+        this.isMarkerSelected = true;
+      }
+      this.selectedStation = data.airportCode;
       this.mapView.panTo({
         lat: data.lat,
         lng: data.long
@@ -137,12 +209,21 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       this.onResetEvent();
     })
 
+    this.mapResetService.dashboardResetEvent.subscribe(() => {
+      this.metarReportDivStatus = 'hidden';
+
+    })
+
     this.mapMarkerService.clickEvent.subscribe((data: any) => {
       this.zoomLevel = 10;
       this.mapView.panTo({
         lat: data.lat,
         lng: data.long
       })
+
+      if (this.metarReportDivStatus == 'appear') {
+        this.data24hService.resetDataEvent.emit(data.airportCode);
+      }
 
       if (this.modeSelected == 'airport_find') {
         this.mapMarkerService.onAirportModeClickEvent(data);
@@ -210,18 +291,71 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.flightArrivalAvailable = false;
         this.flightArrival = null;
       }
+      this.airSigmetArray.forEach((item) => {
+        item.setMap(null);
+      })
+      this.airSigmetArray = [];
     })
 
     this.mapMetarStationsService.flightMarkerEvent.subscribe((data: any) => {
-      if(data.type == 'flightSearchDeparture') {
+      if (data.type == 'flightSearchDeparture') {
         this.flightDepartureAvailable = true;
         this.flightDeparture = data.stationDetail;
       }
-      if(data.type == 'flightSearchArrival') {
+      if (data.type == 'flightSearchArrival') {
         this.flightArrivalAvailable = true;
         this.flightArrival = data.stationDetail;
       }
       this.stationsData = this.stationsData.filter(item => item.airportCode != data.stationDetail.airportCode);
+    })
+
+    this.data24hService.metarDetailClickEvent.subscribe(() => {
+      this.metarReportDivStatus = 'appear';
+    })
+
+    this.data24hService.closeMetarDetailEvent.subscribe(() => {
+      this.metarReportDivStatus = 'hidden';
+    })
+
+    this.mapFlightRouteAdditionalService.airSigmetArrayEvent.subscribe((data: Array<any>) => {
+      // console.log(data);
+      // this.airSigmetArray = data;
+      data.forEach((item) => {
+        this.airSigmetArray.push(this.createAirSigmetPolygon(item));
+      })
+      console.log(this.airSigmetArray);
+    })
+
+    this.mapMarkerService.searchByClickEvent.subscribe((data: any) => {
+      if (this.mapMarkerComponents.toArray().length > 0) {
+        this.mapMarkerComponents.toArray().forEach((component) => {
+          component.onMarkerSelectionUpdate(data.airportCode);
+        })
+      }
+      this.searchResult = data;
+      this.searchResultDisplay = "flex";
+    })
+
+    this.mapResetService.resetSearchResult.subscribe(() => {
+      this.searchResultDisplay = "none";
+      this.searchResult = {
+        latitude: 0,
+        longitude: 0,
+        airportCode: "",
+        temperatureValue: 0,
+        windDegreeValue: 0,
+        windSpeedValue: "",
+        visibilityValue: "",
+        altimeterValue: 0,
+        dewPointValue: 0,
+        cloudCoverValue: "",
+        cloudFtValue: "",
+        flightCategory: "",
+        observationValue: "",
+        transformValue: "",
+        flightCategoryColor: "",
+        svgIconSource: ""
+      }
     })
   }
 
@@ -247,8 +381,6 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         map: this.mapView
       })
 
-      this.data_layer.loadGeoJson(this.county_JSON);
-
       this.data_layer.setStyle({
         strokeWeight: 1,
         fillColor: '#edebe8',
@@ -257,11 +389,11 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         clickable: false,
       })
 
+      this.data_layer.loadGeoJson(this.county_JSON);
+
       this.data_layer2 = new google.maps.Data({
         map: this.mapView
       });
-
-      this.data_layer2.loadGeoJson(this.state_JSON);
 
       this.data_layer2.setStyle({
         strokeWeight: 3,
@@ -269,6 +401,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         strokeColor: 'rgb(100, 100, 100)',
         zIndex: 1
       })
+
+      this.data_layer2.loadGeoJson(this.state_JSON);
 
       this.data_layer2.addListener('click', (event: any) => {
         //console.log(event.feature.getProperty('STATE_ABBR'));
@@ -334,6 +468,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       }, 8000);
     });
 
+    this.metarDetailDivMarginTop = this.mapOptionMenuDirective.checkNativeElement() + "px";
+
     this.agmMap.boundsChange.subscribe((data: any) => {
       this.mapMetarStationsService.onBoundaryChange(data.toJSON(), this.zoomLevel);
 
@@ -382,6 +518,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onResetEvent() {
     this.mapMetarStationsService.setClickTrigger(false);
+    this.mapResetService.resetSearchResult.emit();
 
     this.zoomLevel = 5;
 
@@ -390,7 +527,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       lng: -98.5556199
     })
 
-    console.log(this.mapView.getBounds());
+    this.isResetted = true;
 
     this.mapMetarStationsService.onBoundaryChange(this.mapView.getBounds().toJSON(), this.zoomLevel);
   }
@@ -453,6 +590,12 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.flightLayer != null) {
       this.flightLayer.setMap(null);
     }
+
+    this.metarReportDivStatus = 'hidden';
+    this.airSigmetArray.forEach((item) => {
+      item.setMap(null);
+    })
+    this.airSigmetArray = [];
   }
 
   async callTafResults() {
@@ -545,5 +688,17 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getTransformValue(value: number) {
     return "rotate(" + value + "deg)"
+  }
+
+  createAirSigmetPolygon(data: any) {
+    return new google.maps.Polygon({
+      paths: data.pointArray,
+      strokeColor: data.type,
+      strokeOpacity: 0.8,
+      fillColor: data.type,
+      fillOpacity: 0.35,
+      zIndex: 2,
+      map: this.mapView
+    })
   }
 }

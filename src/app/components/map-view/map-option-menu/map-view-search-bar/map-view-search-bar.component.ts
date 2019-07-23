@@ -36,6 +36,8 @@ export class MapViewSearchBarComponent implements OnInit {
   jsonResult: any;
   @ViewChild(SearchLineDirective) appMapViewSearchBar: SearchLineDirective;
 
+  isReport24hSelected: boolean = false;
+
   constructor(private mapMetarStationsService: MapMetarStationsService,
     private inputService: InputServiceService,
     private mapResetService: MapResetService,
@@ -43,7 +45,6 @@ export class MapViewSearchBarComponent implements OnInit {
     private mapOptionSelectService: MapOptionSelectService,
     private xmlJson: NgxXml2jsonService,
     private data24service: Data24hService,
-    private dashboardService: DashboardService
   ) {
     this.resultListDisplay = 'none';
     this.resultDivDisplay = 'none';
@@ -80,6 +81,7 @@ export class MapViewSearchBarComponent implements OnInit {
     this.airportCode = data.airportCode;
     this.inputDisplay = 'none';
     this.resultDivDisplay = 'block';
+    //linking to onMarkerClick event 
     this.onResultChange([]);
   }
 
@@ -92,7 +94,11 @@ export class MapViewSearchBarComponent implements OnInit {
     this.inputDisplay = 'block';
     this.resultDivDisplay = 'none';
     this.mapResetService.onMapResetTrigger();
-    setTimeout(() => this.appMapViewSearchBar.clickFocus(), 0);
+    this.mapResetService.resetSearchResult.emit();
+    setTimeout(() => {
+      this.appMapViewSearchBar.clickFocus();
+      this.data24service.closeMetarDetailEvent.emit();
+    }, 0);
   }
 
   onModeChange(value: any) {
@@ -100,26 +106,16 @@ export class MapViewSearchBarComponent implements OnInit {
   }
 
   on24hclick() {
-    if (this.resultAirportCode != "") {
-      fetch('https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&stationString=' + this.airportCode + '&hoursBeforeNow=24')
-        .then(data => data.text())
-        .then(data => {
-          let parser = new DOMParser();
-          let xml = parser.parseFromString(data, 'text/xml');
-          this.jsonResult = this.xmlJson.xmlToJson(xml);
-
-          console.log(this.jsonResult.response.data.METAR);
-
-          this.data24service.saveData(this.jsonResult.response.data.METAR)
-          console.log("Showing Dashboard modal.....")
-          this.dashboardService.onModalShowUpTrigger('dashboard-modal');
-          this.data24service.getTemperature();
-        })
+    if (this.resultAirportCode != "" && this.isReport24hSelected == false) {
+      this.data24service.fetchMetarData24h(this.airportCode);
+      this.isReport24hSelected = true;
+    }
+    else if (this.resultAirportCode != "") {
+      this.mapResetService.dashboardResetEvent.emit();
+      this.isReport24hSelected = false;
     }
     else {
       alert("Please input a station!");
     }
   }
-
-
 }

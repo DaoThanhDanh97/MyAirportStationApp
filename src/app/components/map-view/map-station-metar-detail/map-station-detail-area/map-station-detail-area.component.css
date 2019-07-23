@@ -1,0 +1,15 @@
+.area-header {
+    padding: 16px 24px
+}
+
+.underline-hr {
+    border-top: 1px solid rgba(40,40,40,0.8);
+    margin-bottom: 0px;
+}
+
+.overlay-marker {
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    pointer-events: none
+}

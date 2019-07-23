@@ -43,6 +43,10 @@ import { DewpointChartComponent } from './components/app-data-modal/dewpoint-cha
 import { MapOptionSelectAreaComponent } from './components/map-view/map-option-menu/map-option-select-area/map-option-select-area.component';
 import { MapOptionSelectItemComponent } from './components/map-view/map-option-menu/map-option-select-area/map-option-select-item/map-option-select-item.component';
 import { MapStationMetarDetailComponent } from './components/map-view/map-station-metar-detail/map-station-metar-detail.component';
+import { OptionMenuDirective } from './directives/option-menu.directive';
+import { MapStationDetailAreaComponent } from './components/map-view/map-station-metar-detail/map-station-detail-area/map-station-detail-area.component';
+import { Metar24hWindDegreeDirective } from './directives/metar-24h-wind-degree.directive';
+import { MapSearchResultMarkerComponent } from './components/map-view/map-search-result-marker/map-search-result-marker.component';
 
 
 const appRoute: Routes = [
@@ -92,6 +96,10 @@ const appRoute: Routes = [
     MapOptionSelectAreaComponent,
     MapOptionSelectItemComponent,
     MapStationMetarDetailComponent,
+    OptionMenuDirective,
+    MapStationDetailAreaComponent,
+    Metar24hWindDegreeDirective,
+    MapSearchResultMarkerComponent,
     
   
   ],
@@ -129,6 +137,8 @@ export class AppModule {
     matIconRegistry.addSvgIcon("cloud_SCT", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_SCT.svg'));
     matIconRegistry.addSvgIcon("cloud_BKN", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_BKN.svg'));
     matIconRegistry.addSvgIcon("cloud_OVC", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_OVC.svg'));
+    matIconRegistry.addSvgIcon("cloud_DFT", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_DFT.svg'));
     matIconRegistry.addSvgIcon("cloud", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud.svg'));
+    matIconRegistry.addSvgIcon("wind-dir", domSantinizer.bypassSecurityTrustResourceUrl('./assets/wind-dir.svg'));
   }
 }

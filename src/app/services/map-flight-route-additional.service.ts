@@ -9,6 +9,7 @@ export class MapFlightRouteAdditionalService {
   onFlightDataLoadComplete = new EventEmitter<any>();
   onInitialRouteBoundaryReceived = new EventEmitter<void>();
   returnToDefaultMode = new EventEmitter<string>();
+  airSigmetArrayEvent = new EventEmitter<Array<any>>();
 
   constructor() { }
 }
