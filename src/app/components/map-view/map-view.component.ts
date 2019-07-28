@@ -95,6 +95,8 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChildren(MapViewMarkerComponent) mapMarkerComponents: QueryList<MapViewMarkerComponent>;
 
+  airSigmetInfoDisplay: string = 'none';
+
   //airport mode
   modeSelected: string = '';
   isPathFound: boolean = false;
@@ -295,6 +297,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         item.setMap(null);
       })
       this.airSigmetArray = [];
+      this.airSigmetInfoDisplay = 'none';
     })
 
     this.mapMetarStationsService.flightMarkerEvent.subscribe((data: any) => {
@@ -323,7 +326,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       data.forEach((item) => {
         this.airSigmetArray.push(this.createAirSigmetPolygon(item));
       })
-      console.log(this.airSigmetArray);
+      this.airSigmetInfoDisplay = 'flex';
     })
 
     this.mapMarkerService.searchByClickEvent.subscribe((data: any) => {
@@ -596,6 +599,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       item.setMap(null);
     })
     this.airSigmetArray = [];
+    this.airSigmetInfoDisplay = 'none';
   }
 
   async callTafResults() {

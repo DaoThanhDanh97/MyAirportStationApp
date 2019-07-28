@@ -47,6 +47,8 @@ import { OptionMenuDirective } from './directives/option-menu.directive';
 import { MapStationDetailAreaComponent } from './components/map-view/map-station-metar-detail/map-station-detail-area/map-station-detail-area.component';
 import { Metar24hWindDegreeDirective } from './directives/metar-24h-wind-degree.directive';
 import { MapSearchResultMarkerComponent } from './components/map-view/map-search-result-marker/map-search-result-marker.component';
+import { MapViewFlightAirsigmetInfoComponent } from './components/map-view/map-view-flight-airsigmet-info/map-view-flight-airsigmet-info.component';
+import { MapViewFlightAirsigmetDetailComponent } from './components/map-view/map-view-flight-airsigmet-info/map-view-flight-airsigmet-detail/map-view-flight-airsigmet-detail.component';
 
 
 const appRoute: Routes = [
@@ -100,6 +102,8 @@ const appRoute: Routes = [
     MapStationDetailAreaComponent,
     Metar24hWindDegreeDirective,
     MapSearchResultMarkerComponent,
+    MapViewFlightAirsigmetInfoComponent,
+    MapViewFlightAirsigmetDetailComponent,
     
   
   ],

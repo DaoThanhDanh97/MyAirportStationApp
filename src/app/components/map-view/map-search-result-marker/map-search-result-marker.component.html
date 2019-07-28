@@ -1,7 +1,7 @@
 <agm-overlay [latitude]="searchResult.latitude" [longitude]="searchResult.longitude">
   <div class="info-div">
     <mat-icon [svgIcon]="searchResult.svgIconSource"></mat-icon>
-    <div class="info-outer">
+    <div class="info-outer" style="color: midnightblue">
       <div class="info-cloud-ft">
         {{searchResult.cloudFtValue}}
       </div>
@@ -9,7 +9,7 @@
         <div class="mr-2 d-flex align-items-center justify-content-center"
           [ngStyle]="{'transform': searchResult.transformValue}">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14">
-            <circle cx="7" cy="7" r="7" stroke="" fill="black" />
+            <circle cx="7" cy="7" r="7" stroke="" fill="midnightblue" />
             <line x1="7" y1="7" x2="7" y2="1" style="stroke: white" />
           </svg>
         </div>

@@ -48,4 +48,5 @@
 <app-map-station-metar-detail [marginTopValue]="metarDetailDivMarginTop" [@appearHidden]="metarReportDivStatus" class="col-xl-5 mt-0 p-0 no_pointerEvent" style="position: absolute; top: 0; left: 0; height: 100%"></app-map-station-metar-detail>
 <app-map-option-menu #appMapOptionMenu appOptionMenu (changeModeEvent)="updateMode($event)" class="col-xl-5 mt-3 p-0 no_pointerEvent"
     style="position: absolute; top: 0; left: 0"></app-map-option-menu>
+<app-map-view-flight-airsigmet-info class="col-xl-5 mt-3 p-0 no_pointerEvent justify-content-end" style="position: absolute; top: 0; right: 0" [ngStyle]="{'display': airSigmetInfoDisplay}"></app-map-view-flight-airsigmet-info>
 <app-map-view-spinner appSpinnerLayer class="mapViewSpinner"></app-map-view-spinner>
