@@ -9,7 +9,7 @@ import { Metar24hWindDegreeDirective } from 'src/app/directives/metar-24h-wind-d
 export class MapStationDetailAreaComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() chartTitle: string;
   @Input() chartType: string;
-  @Input() chartColumnsNames: Array<string>;
+  @Input() chartColumnsNames: Array<any>;
   @Input() chartData: Array<Array<any>>;
   @Input() chartOptions: any;
   @Input() isEnd: boolean;
@@ -28,6 +28,12 @@ export class MapStationDetailAreaComponent implements OnInit, AfterViewInit, OnC
       this.chartColumnsNames = [this.chartColumnsNames[0], this.chartColumnsNames[2]];
       this.rotationArray = this.chartData.map(item => parseInt(item[1]));
       this.chartData = this.chartData.map(item => { return [item[0], item[2]] });
+    }
+
+    else if (this.divId == 'alt_slp_chart_id') {
+      this.chartColumnsNames = [this.chartColumnsNames[0], this.chartColumnsNames[1]];
+      this.chartColumnsNames.push({type: 'string', role: 'tooltip'});
+      this.chartData = this.chartData.map(item => {return [parseFloat(item[1]), parseFloat(item[2]), this.createToolTipContent(item)]});
     }
   }
 
@@ -75,6 +81,9 @@ export class MapStationDetailAreaComponent implements OnInit, AfterViewInit, OnC
       case 'cloud-tree-map-id': {
         return new google.visualization.TreeMap(document.getElementById(this.divId));
       }
+      case 'alt_slp_chart_id': {
+        return new google.visualization.ScatterChart(document.getElementById(this.divId));
+      }
       default: return null
     }
   }
@@ -92,5 +101,9 @@ export class MapStationDetailAreaComponent implements OnInit, AfterViewInit, OnC
         left: Math.floor(cli.getXLocation(index))
       })
     })
+  }
+
+  createToolTipContent(item: any) {
+    return ('Time Observed: ' + item[0] + '\n' + 'Altimeter: ' + item[1] + '\n' + 'Sea Level Pressure: ' + item[2]);
   }
 }

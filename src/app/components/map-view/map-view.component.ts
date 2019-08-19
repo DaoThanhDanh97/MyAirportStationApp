@@ -140,7 +140,10 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       observationValue: "",
       transformValue: "",
       flightCategoryColor: "",
-      svgIconSource: ""
+      svgIconSource: "",
+      wxString: "",
+      elevation: "",
+      seaLevelPressure: ""
     }
   }
 
@@ -357,7 +360,10 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
         observationValue: "",
         transformValue: "",
         flightCategoryColor: "",
-        svgIconSource: ""
+        svgIconSource: "",
+        wxString: "",
+        elevation: "",
+        seaLevelPressure: ""
       }
     })
   }

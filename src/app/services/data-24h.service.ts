@@ -87,4 +87,10 @@ export class Data24hService {
           this.saveData(this.jsonResult.response.data.METAR);
         })
   }
+
+  getAltSLP() {
+    return (_.map(this.data, function (item) {
+      return _.pick(item, "observation_time", "altim_in_hg", "sea_level_pressure_mb");
+    }).filter(item => item.sea_level_pressure_mb != null && item.altim_in_hg != null));
+  }
 }

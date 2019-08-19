@@ -31,10 +31,36 @@ export class MapStationMetarDetailComponent implements OnInit {
     chartArea: {left: 57, top: 25, width: "80%", height: "70%"}
   }
 
-  scatterChartOptions = {
+  altimeterChartOptions = {
+    legend: { position: 'none' },
+    colors: ['lightblue'],
+    chartArea: {left: 57, top: 25, width: "80%", height: "70%"},
+  }
+
+  windChartOptions = {
     legend: { position: 'none' },
     colors: ['green'],
     chartArea: {left: 57, top: 25, width: "80%", height: "70%"},
+  }
+
+  visibilityChartOptions = {
+    legend: { position: 'none' },
+    colors: ['orange'],
+    chartArea: {left: 57, top: 25, width: "80%", height: "70%"},
+  }
+
+  altSLPChartOptions = {
+    legend: { position: 'none' },
+    colors: ['yellow'],
+    chartArea: {left: 57, top: 25, width: "80%", height: "70%"},
+    hAxis: {
+      title: 'Altimeter (hg)'
+    },
+    vAxis: {
+      title: 'Sea Level Pressure (mb)'
+    },
+    theme: 'Material',
+    tooltip: {isHtml: true}
   }
 
   treeMapOptions = {
@@ -46,7 +72,7 @@ export class MapStationMetarDetailComponent implements OnInit {
     fontColor: 'white',
     showScale: true,
     height: "100%",
-    useWeightedAverageForAggregation: true
+    useWeightedAverageForAggregation: true,
   }
 
   constructor(private data24hService: Data24hService, private mapResetService: MapResetService) {
@@ -62,11 +88,13 @@ export class MapStationMetarDetailComponent implements OnInit {
         let timeString = this.createHourMinuteString(item.observation_time);
         return [timeString, parseFloat(item.temp_c), parseFloat(dewPointData[index].dewpoint_c)];
       });
+      this.data24hService.getAltSLP();
       this.dataReportArray[0].data = tempDewColumnsData;
       this.dataReportArray[1].data = this.createDataFromSource(this.data24hService.getAltimeter(), this.dataReportArray[1].divId);
       this.dataReportArray[2].data = this.createDataFromSource(this.data24hService.getWind(), this.dataReportArray[2].divId);      
       this.dataReportArray[3].data = this.createDataFromSource(this.data24hService.getVisibility(), this.dataReportArray[3].divId);
       this.dataReportArray[4].data = this.createDataFromSource(this.data24hService.getCloudCover(), this.dataReportArray[4].divId);
+      this.dataReportArray[5].data = this.createDataFromSource(this.data24hService.getAltSLP(), this.dataReportArray[5].divId);
       this.dataFound = true;
     })
 
@@ -100,10 +128,16 @@ export class MapStationMetarDetailComponent implements OnInit {
         return [timeString, parseFloat(Object.values(item)[1])]
       })
     }
+    else if (divId == 'alt_slp_chart_id') {
+      return src.reverse().map((item: {altim_in_hg: string, sea_level_pressure_mb: string, observation_time: string}) => {
+        let timeString = this.createHourMinuteString(item.observation_time);
+        return [timeString, parseFloat(Object.values(item)[1]), parseFloat(Object.values(item)[2])];
+      })
+    }
     else if (divId == 'wind-cond-chart-id') {
       return src.reverse().map((item: {observation_time: string, value: string}) => {
         let timeString = this.createHourMinuteString(item.observation_time);
-        return [timeString, parseFloat(Object.values(item)[1]), parseFloat(Object.values(item)[2])]
+        return [timeString, parseFloat(Object.values(item)[1]), parseFloat(Object.values(item)[2])];
       })
     }
     else if (divId == 'cloud-tree-map-id') {
@@ -140,7 +174,7 @@ export class MapStationMetarDetailComponent implements OnInit {
         'Altimeter',
         'Scatter',
         ["Time", "Altimeter"],
-        this.scatterChartOptions,
+        this.altimeterChartOptions,
         false,
         'altimeter-chart-id'
       ),
@@ -148,7 +182,7 @@ export class MapStationMetarDetailComponent implements OnInit {
         'Wind Condition',
         'Scatter',
         ["Time", "Wind Speed", "Wind Degree"],
-        this.scatterChartOptions,
+        this.windChartOptions,
         false,
         'wind-cond-chart-id'
       ),
@@ -156,7 +190,7 @@ export class MapStationMetarDetailComponent implements OnInit {
         'Visibility',
         'Scatter',
         ["Time", "Visibility"],
-        this.scatterChartOptions,
+        this.visibilityChartOptions,
         false,
         'visibility-chart-id'
       ),
@@ -165,8 +199,16 @@ export class MapStationMetarDetailComponent implements OnInit {
         'Treemap',
         ['Data', 'Parent', 'Coverage Value'],
         this.treeMapOptions,
-        true,
+        false,
         'cloud-tree-map-id'
+      ),
+      new DetailChart(
+        'Altimeter & Sea Level Pressure',
+        'Scatter',
+        ["Altimeter", "Sea Level Pressure"],
+        this.altSLPChartOptions,
+        true,
+        'alt_slp_chart_id'
       )
     ]
   }

@@ -8,10 +8,11 @@ import { Component, OnInit, Input } from '@angular/core';
 export class MapSearchResultMarkerComponent implements OnInit {
   @Input() searchResult: any;
 
+  seaLevelPressureDisplay: String;
+
   constructor() { }
 
   ngOnInit() {
-  }
-
-  
+    this.seaLevelPressureDisplay = (this.searchResult.seaLevelPressure == "")? "none" : "flex";
+  } 
 }

@@ -144,5 +144,7 @@ export class AppModule {
     matIconRegistry.addSvgIcon("cloud_DFT", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud_DFT.svg'));
     matIconRegistry.addSvgIcon("cloud", domSantinizer.bypassSecurityTrustResourceUrl('./assets/cloud.svg'));
     matIconRegistry.addSvgIcon("wind-dir", domSantinizer.bypassSecurityTrustResourceUrl('./assets/wind-dir.svg'));
+    matIconRegistry.addSvgIcon("height", domSantinizer.bypassSecurityTrustResourceUrl('./assets/height.svg'));
+    matIconRegistry.addSvgIcon("slp", domSantinizer.bypassSecurityTrustResourceUrl('./assets/slp.svg'));
   }
 }

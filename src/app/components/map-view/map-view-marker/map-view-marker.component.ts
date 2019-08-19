@@ -106,7 +106,10 @@ export class MapViewMarkerComponent implements OnInit {
             observationValue: this.observationValue,
             transformValue: this.transformValue + " scale(1.5)",
             flightCategoryColor: this.flightCategoryColor,
-            svgIconSource: this.svgIconSource
+            svgIconSource: this.svgIconSource,
+            wxString: (firstResult.wx_string != null)? firstResult.wx_string : "",
+            elevation: (firstResult.elevation_m != null)? firstResult.elevation_m : "",
+            seaLevelPressure: (firstResult.sea_level_pressure_mb != null)? firstResult.sea_level_pressure_mb : ""
           })
           this.markerDisplayValue = "none";
         }

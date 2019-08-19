@@ -15,6 +15,10 @@
         </div>
         {{searchResult.windSpeedValue}}
       </div>
+      <div class="info-elevation">
+        <mat-icon svgIcon="height"></mat-icon>
+        {{searchResult.elevation}}    
+      </div>
       <div class="info-visibility">
         <mat-icon svgIcon="visibility"></mat-icon>
         {{searchResult.visibilityValue}}
@@ -37,6 +41,13 @@
       </div>
       <div class="info-station" [ngStyle]="{'color': searchResult.flightCategoryColor}">
         {{searchResult.airportCode}} - {{searchResult.observationValue}}
+      </div>
+      <div class="info-wx">
+        {{searchResult.wxString}}
+      </div>
+      <div class="info-sea-level-pressure" [ngStyle]="{'display': seaLevelPressureDisplay}">
+        <mat-icon svgIcon="slp"></mat-icon>
+        {{searchResult.seaLevelPressure}}
       </div>
     </div>
   </div>
