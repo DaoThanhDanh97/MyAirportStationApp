@@ -151,6 +151,7 @@ export class MapViewRouteFormComponent implements OnInit, AfterViewInit {
     this.resetBoundaryButtonDispMode = 'none';
     this.isRouteButtonClicked = false;
     this.mapFlightRouteAdditionalService.returnToDefaultMode.emit(value);
+    this.mapFlightRouteAdditionalService.returnClickAction.emit(value);
   }
 
   onChangeMode(value: string) {

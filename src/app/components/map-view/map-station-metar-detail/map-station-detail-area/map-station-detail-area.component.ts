@@ -60,6 +60,9 @@ export class MapStationDetailAreaComponent implements OnInit, AfterViewInit, OnC
     if (this.divId == 'wind-cond-chart-id') {
       google.visualization.events.addListener(this.chart, 'ready', this.placeMarker.bind(this, data));
     }
+    if (this.divId == 'cloud-tree-map-id') {
+      google.visualization.events.addListener(this.chart, 'ready', this.testFunction.bind(this));
+    }
     this.chart.draw(data, this.chartOptions);
   }
 
@@ -105,5 +108,17 @@ export class MapStationDetailAreaComponent implements OnInit, AfterViewInit, OnC
 
   createToolTipContent(item: any) {
     return ('Time Observed: ' + item[0] + '\n' + 'Altimeter: ' + item[1] + '\n' + 'Sea Level Pressure: ' + item[2]);
+  }
+
+  testFunction() {
+    document.getElementById('cloud-tree-map-id').addEventListener('click', (event) => {
+      console.log(event.clientX, event.clientY);
+      var gHTMLColArr = document.getElementById('cloud-tree-map-id').getElementsByTagName('g');
+      var gArray = Array.prototype.slice.call(gHTMLColArr);
+      if (gArray[gArray.length - 1].style.cursor == "") {
+        //not recommended, will change later
+        gArray[gArray.length - 1].remove();
+      }
+    })
   }
 }

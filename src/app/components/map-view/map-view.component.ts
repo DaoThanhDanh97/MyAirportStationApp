@@ -277,7 +277,7 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
           new google.maps.LatLng(Math.min(...latList), Math.min(...lngList)),
           new google.maps.LatLng(Math.max(...latList), Math.max(...lngList))
         )
-
+        console.log(this.stationsData);
         this.mapView.fitBounds(flightBoundary);
       }
     })
@@ -301,6 +301,10 @@ export class MapViewComponent implements OnInit, AfterViewInit, OnDestroy {
       })
       this.airSigmetArray = [];
       this.airSigmetInfoDisplay = 'none';
+    })
+
+    this.mapFlightRouteAdditionalService.returnClickAction.subscribe((data: string) => {
+      this.mapMetarStationsService.onClickTrigger(this.mapView.getBounds().toJSON(), this.zoomLevel);
     })
 
     this.mapMetarStationsService.flightMarkerEvent.subscribe((data: any) => {
