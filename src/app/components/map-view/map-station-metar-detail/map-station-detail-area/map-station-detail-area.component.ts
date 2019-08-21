@@ -18,6 +18,7 @@ export class MapStationDetailAreaComponent implements OnInit, AfterViewInit, OnC
   chart: any;
   initDone: boolean = false;
   rotationArray: Array<number> = [];
+  innerData: any;
 
   @ViewChildren(Metar24hWindDegreeDirective) metar24hMarker: QueryList<Metar24hWindDegreeDirective>;
 
@@ -32,8 +33,8 @@ export class MapStationDetailAreaComponent implements OnInit, AfterViewInit, OnC
 
     else if (this.divId == 'alt_slp_chart_id') {
       this.chartColumnsNames = [this.chartColumnsNames[0], this.chartColumnsNames[1]];
-      this.chartColumnsNames.push({type: 'string', role: 'tooltip'});
-      this.chartData = this.chartData.map(item => {return [parseFloat(item[1]), parseFloat(item[2]), this.createToolTipContent(item)]});
+      this.chartColumnsNames.push({ type: 'string', role: 'tooltip' });
+      this.chartData = this.chartData.map(item => { return [parseFloat(item[1]), parseFloat(item[2]), this.createToolTipContent(item)] });
     }
   }
 
@@ -45,25 +46,39 @@ export class MapStationDetailAreaComponent implements OnInit, AfterViewInit, OnC
     google.charts.setOnLoadCallback(() => this.drawChart());
   }
 
-  drawChart() {   
+  drawChart() {
     //console.log(this.divId);
     var data = google.visualization.arrayToDataTable([this.chartColumnsNames, ...this.chartData]);
-    if(this.divId == 'cloud-tree-map-id') {
+    if (this.divId == 'cloud-tree-map-id') {
       data = new google.visualization.DataTable();
       this.chartColumnsNames.map((item, index) => {
-        let colType = (index < 2)? 'string' : 'number';
+        let colType = (index < 2) ? 'string' : 'number';
         data.addColumn(colType, item);
       })
       data.addRows(this.chartData);
     }
+    this.innerData = data;
     this.chart = this.createChart(this.divId);
     if (this.divId == 'wind-cond-chart-id') {
       google.visualization.events.addListener(this.chart, 'ready', this.placeMarker.bind(this, data));
     }
     if (this.divId == 'cloud-tree-map-id') {
+      this.chartOptions.generateTooltip = showTooltip;
       google.visualization.events.addListener(this.chart, 'ready', this.testFunction.bind(this));
     }
     this.chart.draw(data, this.chartOptions);
+
+    function showTooltip(row, size, value) {
+      if (data.getValue(row, 2) != null) {
+        console.log(data.getRowProperties(row));
+        return '<div style="background:#fd9; padding:10px; border-style:solid">'
+          + 'Value: ' + data.getValue(row, 2)
+          + '</div>';
+      }
+      else {
+        return '<div style="background:#fd9; padding:10px; border-style:solid">' + data.getValue(row, 0) + '</div>';
+      }
+    }
   }
 
   createChart(divId: string) {
